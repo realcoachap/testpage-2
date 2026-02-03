@@ -938,31 +938,44 @@
             }
         }
 
-        // Show selected section - FIXED VERSION
+        // Show selected section - ENHANCED VERSION WITH ERROR HANDLING
         function showSection(section, evt) {
+            console.log("showSection called with:", section); // Debug log
+            
             // Prevent default behavior and stop propagation
             if (evt) {
                 evt.preventDefault();
                 evt.stopPropagation();
             }
             
-            // Hide all sections
+            // Hide all sections using multiple selectors to ensure they're found
             const scheduleSection = document.getElementById('scheduleSection');
             const messagesSection = document.getElementById('messagesSection');
             const calculatorSection = document.getElementById('calculatorSection');
             
-            if (scheduleSection) scheduleSection.style.display = 'none';
-            if (messagesSection) messagesSection.style.display = 'none';
-            if (calculatorSection) calculatorSection.style.display = 'none';
+            if (scheduleSection) {
+                console.log("Hiding schedule section");
+                scheduleSection.style.display = 'none';
+            }
+            if (messagesSection) {
+                console.log("Hiding messages section");
+                messagesSection.style.display = 'none';
+            }
+            if (calculatorSection) {
+                console.log("Hiding calculator section");
+                calculatorSection.style.display = 'none';
+            }
             
             // Show dashboard if not a special section
             const statsSection = document.querySelector('.stats-grid');
             if (statsSection) {
+                console.log("Showing stats section");
                 statsSection.parentElement.style.display = 'block';
             }
             
             const dashboardGrids = document.querySelectorAll('.dashboard-grid');
             dashboardGrids.forEach(grid => {
+                console.log("Showing dashboard grid");
                 grid.style.display = 'grid';
             });
             
@@ -995,6 +1008,7 @@
             // Show selected section
             switch(section) {
                 case 'schedule':
+                    console.log("Showing schedule section");
                     if (statsSection) {
                         statsSection.parentElement.style.display = 'none';
                     }
@@ -1003,10 +1017,14 @@
                     });
                     if (scheduleSection) {
                         scheduleSection.style.display = 'block';
+                        console.log("Schedule section now visible");
                         // Generate calendar after the section is displayed
                         setTimeout(() => {
                             generateCalendar(currentMonth, currentYear);
+                            console.log("Calendar generated");
                         }, 10);
+                    } else {
+                        console.error("scheduleSection element not found!");
                     }
                     break;
                     
@@ -1049,7 +1067,10 @@
         // Calendar functions
         function generateCalendar(month, year) {
             const calendarGrid = document.getElementById('calendarGrid');
-            if (!calendarGrid) return;
+            if (!calendarGrid) {
+                console.error("calendarGrid element not found!");
+                return;
+            }
             
             calendarGrid.innerHTML = '';
 
@@ -1177,8 +1198,19 @@
 
         // Initialize calendar on page load
         document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM loaded, initializing calendar");
             generateCalendar(currentMonth, currentYear);
         });
+        
+        // Additional initialization to ensure functionality
+        window.onload = function() {
+            console.log("Window loaded");
+            // Force initialization of the current view
+            const activeLink = document.querySelector('.nav-links a.active');
+            if (activeLink) {
+                console.log("Active link found:", activeLink.textContent);
+            }
+        };
     </script>
 </body>
 </html>
