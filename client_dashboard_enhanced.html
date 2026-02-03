@@ -99,6 +99,7 @@
             height: calc(100vh - 70px);
             position: fixed;
             overflow-y: auto;
+            z-index: 10;
         }
         
         .nav-links {
@@ -135,6 +136,7 @@
         .main-content {
             flex: 1;
             padding: 2rem 2rem 2rem 270px; /* 270px to account for sidebar */
+            min-height: calc(100vh - 70px);
         }
         
         .page-title {
@@ -428,6 +430,13 @@
         .calendar-section {
             display: none;
             margin-top: 2rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .calendar-section.visible {
+            display: block;
+            opacity: 1;
         }
         
         .calendar-container {
@@ -437,6 +446,7 @@
             box-shadow: 0 3px 10px rgba(0,0,0,0.08);
             height: 600px;
             overflow-y: auto;
+            position: relative;
         }
         
         .calendar-header {
@@ -938,7 +948,7 @@
             }
         }
 
-        // Show selected section - ENHANCED VERSION WITH ERROR HANDLING
+        // Show selected section - ENHANCED VERSION WITH SCROLL AND VISIBILITY FIXES
         function showSection(section, evt) {
             console.log("showSection called with:", section); // Debug log
             
@@ -953,9 +963,11 @@
             const messagesSection = document.getElementById('messagesSection');
             const calculatorSection = document.getElementById('calculatorSection');
             
+            // Hide all sections
             if (scheduleSection) {
                 console.log("Hiding schedule section");
                 scheduleSection.style.display = 'none';
+                scheduleSection.classList.remove('visible'); // Remove visibility class if added
             }
             if (messagesSection) {
                 console.log("Hiding messages section");
@@ -1017,7 +1029,15 @@
                     });
                     if (scheduleSection) {
                         scheduleSection.style.display = 'block';
+                        scheduleSection.classList.add('visible'); // Add visibility class for transition
                         console.log("Schedule section now visible");
+                        
+                        // Force a reflow to ensure the display change takes effect
+                        scheduleSection.offsetHeight;
+                        
+                        // Scroll to the calendar section to make sure it's visible
+                        scheduleSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        
                         // Generate calendar after the section is displayed
                         setTimeout(() => {
                             generateCalendar(currentMonth, currentYear);
