@@ -81,6 +81,35 @@
             color: var(--secondary-color);
         }
         
+        /* Login Status */
+        .login-status {
+            display: flex;
+            align-items: center;
+        }
+        
+        .login-btn {
+            background: var(--secondary-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+        
+        .logout-btn {
+            background: #7f8c8d;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .welcome-message {
+            margin-right: 15px;
+            font-weight: bold;
+        }
+        
         /* WhatsApp Floating Button */
         .whatsapp-float {
             position: fixed;
@@ -429,6 +458,11 @@
     <header>
         <div class="container header-container">
             <a href="#" class="logo">Elite<span>Fit</span></a>
+            <div class="login-status">
+                <span id="welcomeMessage" class="welcome-message" style="display: none;"></span>
+                <a href="login.html" id="loginBtn" class="login-btn">Login</a>
+                <button id="logoutBtn" class="logout-btn" style="display: none;">Logout</button>
+            </div>
             <nav>
                 <ul>
                     <li><a href="#home">Home</a></li>
@@ -449,7 +483,7 @@
             <a href="https://wa.me/13057840724" target="_blank" class="btn btn-whatsapp">
                 <span>💬</span> Chat on WhatsApp
             </a>
-            <a href="#contact" class="btn btn-secondary">View Programs</a>
+            <a href="login.html" class="btn btn-secondary">Client Portal</a>
         </div>
     </section>
 
@@ -677,6 +711,36 @@
     </footer>
 
     <script>
+        // Check if user is logged in
+        function checkLoginStatus() {
+            const currentUser = localStorage.getItem('currentUser');
+            const loginBtn = document.getElementById('loginBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                loginBtn.style.display = 'none';
+                logoutBtn.style.display = 'inline-block';
+                welcomeMessage.textContent = `Welcome, ${user.username}!`;
+                welcomeMessage.style.display = 'inline-block';
+            } else {
+                loginBtn.style.display = 'inline-block';
+                logoutBtn.style.display = 'none';
+                welcomeMessage.style.display = 'none';
+            }
+        }
+        
+        // Logout function
+        function logout() {
+            localStorage.removeItem('currentUser');
+            checkLoginStatus();
+            window.location.href = 'index.html'; // Redirect to home page
+        }
+        
+        // Event listeners
+        document.getElementById('logoutBtn').addEventListener('click', logout);
+        
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -703,6 +767,11 @@
                 header.style.background = 'var(--primary-color)';
             }
         });
+        
+        // Initialize login status on page load
+        window.onload = function() {
+            checkLoginStatus();
+        };
     </script>
 </body>
 </html>
