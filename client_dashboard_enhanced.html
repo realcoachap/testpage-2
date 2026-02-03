@@ -436,6 +436,7 @@
             padding: 1.5rem;
             box-shadow: 0 3px 10px rgba(0,0,0,0.08);
             height: 600px;
+            overflow-y: auto;
         }
         
         .calendar-header {
@@ -637,18 +638,18 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <ul class="nav-links">
-                <li><a href="#" class="active" onclick="showSection('dashboard')"><i class="fas fa-chart-line"></i> <span>Dashboard</span></a></li>
-                <li><a href="#" onclick="showSection('workouts')"><i class="fas fa-dumbbell"></i> <span>My Workouts</span></a></li>
-                <li><a href="#" onclick="showSection('nutrition')"><i class="fas fa-utensils"></i> <span>Nutrition Plan</span></a></li>
-                <li><a href="#" onclick="showSection('progress')"><i class="fas fa-chart-bar"></i> <span>Progress</span></a></li>
-                <li><a href="#" onclick="showSection('photos')"><i class="fas fa-camera"></i> <span>Progress Photos</span></a></li>
-                <li><a href="#" onclick="showSection('measurements')"><i class="fas fa-ruler-vertical"></i> <span>Measurements</span></a></li>
-                <li><a href="#" onclick="showSection('goals')"><i class="fas fa-bullseye"></i> <span>Goals</span></a></li>
-                <li><a href="#" onclick="showSection('messages')"><i class="fas fa-comments"></i> <span>Messages</span></a></li>
-                <li><a href="#" onclick="showSection('schedule')"><i class="fas fa-calendar-alt"></i> <span>Schedule</span></a></li>
-                <li><a href="#" onclick="showSection('calculator')"><i class="fas fa-calculator"></i> <span>Calorie Calculator</span></a></li>
-                <li><a href="#" onclick="showSection('resources')"><i class="fas fa-book"></i> <span>Resources</span></a></li>
-                <li><a href="#" onclick="showSection('settings')"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+                <li><a href="#" class="active" onclick="showSection('dashboard', event)"><i class="fas fa-chart-line"></i> <span>Dashboard</span></a></li>
+                <li><a href="#" onclick="showSection('workouts', event)"><i class="fas fa-dumbbell"></i> <span>My Workouts</span></a></li>
+                <li><a href="#" onclick="showSection('nutrition', event)"><i class="fas fa-utensils"></i> <span>Nutrition Plan</span></a></li>
+                <li><a href="#" onclick="showSection('progress', event)"><i class="fas fa-chart-bar"></i> <span>Progress</span></a></li>
+                <li><a href="#" onclick="showSection('photos', event)"><i class="fas fa-camera"></i> <span>Progress Photos</span></a></li>
+                <li><a href="#" onclick="showSection('measurements', event)"><i class="fas fa-ruler-vertical"></i> <span>Measurements</span></a></li>
+                <li><a href="#" onclick="showSection('goals', event)"><i class="fas fa-bullseye"></i> <span>Goals</span></a></li>
+                <li><a href="#" onclick="showSection('messages', event)"><i class="fas fa-comments"></i> <span>Messages</span></a></li>
+                <li><a href="#" onclick="showSection('schedule', event)"><i class="fas fa-calendar-alt"></i> <span>Schedule</span></a></li>
+                <li><a href="#" onclick="showSection('calculator', event)"><i class="fas fa-calculator"></i> <span>Calorie Calculator</span></a></li>
+                <li><a href="#" onclick="showSection('resources', event)"><i class="fas fa-book"></i> <span>Resources</span></a></li>
+                <li><a href="#" onclick="showSection('settings', event)"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
             </ul>
         </aside>
 
@@ -937,56 +938,119 @@
             }
         }
 
-        // Show selected section
-        function showSection(section) {
+        // Show selected section - FIXED VERSION
+        function showSection(section, evt) {
+            // Prevent default behavior and stop propagation
+            if (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+            }
+            
             // Hide all sections
-            document.getElementById('scheduleSection').style.display = 'none';
-            document.getElementById('messagesSection').style.display = 'none';
-            document.getElementById('calculatorSection').style.display = 'none';
+            const scheduleSection = document.getElementById('scheduleSection');
+            const messagesSection = document.getElementById('messagesSection');
+            const calculatorSection = document.getElementById('calculatorSection');
+            
+            if (scheduleSection) scheduleSection.style.display = 'none';
+            if (messagesSection) messagesSection.style.display = 'none';
+            if (calculatorSection) calculatorSection.style.display = 'none';
             
             // Show dashboard if not a special section
-            document.querySelector('.stats-grid').parentElement.style.display = 'block';
-            document.querySelectorAll('.dashboard-grid').forEach(grid => {
+            const statsSection = document.querySelector('.stats-grid');
+            if (statsSection) {
+                statsSection.parentElement.style.display = 'block';
+            }
+            
+            const dashboardGrids = document.querySelectorAll('.dashboard-grid');
+            dashboardGrids.forEach(grid => {
                 grid.style.display = 'grid';
             });
             
             // Update active nav link
-            document.querySelectorAll('.nav-links a').forEach(link => {
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
                 link.classList.remove('active');
             });
-            event.target.closest('a').classList.add('active');
+            
+            // Find the clicked element and mark it as active
+            if (evt && evt.target) {
+                let target = evt.target;
+                // If the click was on the icon or span inside the link, get the parent link
+                while (target && target.tagName !== 'A') {
+                    target = target.parentElement;
+                    if (!target) break;
+                }
+                if (target) {
+                    target.classList.add('active');
+                }
+            } else {
+                // Fallback: find the link that matches the section
+                navLinks.forEach(link => {
+                    if (link.href && link.href.includes(section)) {
+                        link.classList.add('active');
+                    }
+                });
+            }
 
             // Show selected section
-            if (section === 'schedule') {
-                document.querySelector('.stats-grid').parentElement.style.display = 'none';
-                document.querySelectorAll('.dashboard-grid').forEach(grid => {
-                    grid.style.display = 'none';
-                });
-                document.getElementById('scheduleSection').style.display = 'block';
-                generateCalendar(currentMonth, currentYear);
-            } else if (section === 'messages') {
-                document.querySelector('.stats-grid').parentElement.style.display = 'none';
-                document.querySelectorAll('.dashboard-grid').forEach(grid => {
-                    grid.style.display = 'none';
-                });
-                document.getElementById('messagesSection').style.display = 'block';
-            } else if (section === 'calculator') {
-                document.querySelector('.stats-grid').parentElement.style.display = 'none';
-                document.querySelectorAll('.dashboard-grid').forEach(grid => {
-                    grid.style.display = 'none';
-                });
-                document.getElementById('calculatorSection').style.display = 'block';
-            } else if (section === 'dashboard') {
-                document.querySelector('.stats-grid').parentElement.style.display = 'block';
-                document.querySelectorAll('.dashboard-grid').forEach(grid => {
-                    grid.style.display = 'grid';
-                });
+            switch(section) {
+                case 'schedule':
+                    if (statsSection) {
+                        statsSection.parentElement.style.display = 'none';
+                    }
+                    dashboardGrids.forEach(grid => {
+                        grid.style.display = 'none';
+                    });
+                    if (scheduleSection) {
+                        scheduleSection.style.display = 'block';
+                        // Generate calendar after the section is displayed
+                        setTimeout(() => {
+                            generateCalendar(currentMonth, currentYear);
+                        }, 10);
+                    }
+                    break;
+                    
+                case 'messages':
+                    if (statsSection) {
+                        statsSection.parentElement.style.display = 'none';
+                    }
+                    dashboardGrids.forEach(grid => {
+                        grid.style.display = 'none';
+                    });
+                    if (messagesSection) {
+                        messagesSection.style.display = 'block';
+                    }
+                    break;
+                    
+                case 'calculator':
+                    if (statsSection) {
+                        statsSection.parentElement.style.display = 'none';
+                    }
+                    dashboardGrids.forEach(grid => {
+                        grid.style.display = 'none';
+                    });
+                    if (calculatorSection) {
+                        calculatorSection.style.display = 'block';
+                    }
+                    break;
+                    
+                case 'dashboard':
+                default:
+                    if (statsSection) {
+                        statsSection.parentElement.style.display = 'block';
+                    }
+                    dashboardGrids.forEach(grid => {
+                        grid.style.display = 'grid';
+                    });
+                    break;
             }
         }
 
         // Calendar functions
         function generateCalendar(month, year) {
             const calendarGrid = document.getElementById('calendarGrid');
+            if (!calendarGrid) return;
+            
             calendarGrid.innerHTML = '';
 
             // Add day headers
@@ -1013,7 +1077,10 @@
             for (let day = 1; day <= daysInMonth; day++) {
                 const dayCell = document.createElement('div');
                 dayCell.className = 'calendar-day';
-                dayCell.onclick = () => selectDay(day, month, year);
+                // Fixed the event handler to pass correct parameters
+                dayCell.onclick = function() {
+                    selectDay(day, month, year);
+                };
                 
                 const dayNumber = document.createElement('div');
                 dayNumber.className = 'calendar-day-number';
@@ -1108,8 +1175,10 @@
             `;
         }
 
-        // Initialize calendar
-        generateCalendar(currentMonth, currentYear);
+        // Initialize calendar on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            generateCalendar(currentMonth, currentYear);
+        });
     </script>
 </body>
 </html>
