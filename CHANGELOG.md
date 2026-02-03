@@ -1,5 +1,12 @@
 # EliteFit Personal Training Website - Changelog
 
+## Version 1.4 - February 3, 2026
+### Fixed
+- Enhanced calendar functionality with debug logging and error handling
+- Added console logging to track function execution
+- Improved element selection with better fallbacks
+- Added window.onload handler for additional initialization
+
 ## Version 1.3 - February 3, 2026
 ### Fixed
 - Calendar functionality in client dashboard now properly displays when Schedule link is clicked
