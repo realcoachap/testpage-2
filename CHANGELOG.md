@@ -1,4 +1,4 @@
-# EliteFit Personal Training Website - Changelog
+# Ascended Fitness by Coach AP - Personal Training Website - Changelog
 
 ## Version 2.0 - February 4, 2026
 ### Added
@@ -7,6 +7,7 @@
 - Theme selector dropdown in calendar header
 - Enhanced aesthetics with "business in the front, party in the back" concept
 - Improved hover effects and animations for better user experience
+- Completed rebranding from EliteFit to Ascended Fitness by Coach AP
 
 ## Version 1.9 - February 4, 2026
 ### Added
@@ -18,7 +19,7 @@
 
 ## Version 1.8 - February 3, 2026
 ### Changed
-- Completed rebranding to "Ascended Fitness by Coach AP"
+- Completed rebranding from "EliteFit Training" to "Ascended Fitness by Coach AP"
 - Updated all pages and login screens with new branding
 
 ## Version 1.7 - February 3, 2026
