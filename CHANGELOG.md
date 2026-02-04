@@ -1,5 +1,10 @@
 # EliteFit Personal Training Website - Changelog
 
+## Version 1.8 - February 3, 2026
+### Changed
+- Updated branding from "EliteFit Training" to "Ascended Fitness by Coach AP"
+- Updated all pages and login screens with new branding
+
 ## Version 1.7 - February 3, 2026
 ### Added
 - WhatsApp Calendar integration with booking functionality
