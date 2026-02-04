@@ -1,5 +1,12 @@
 # EliteFit Personal Training Website - Changelog
 
+## Version 1.7 - February 3, 2026
+### Added
+- WhatsApp Calendar integration with booking functionality
+- New "WhatsApp Calendar" option in sidebar for integrated scheduling
+- WhatsApp booking form with pre-filled message functionality
+- Direct WhatsApp contact button for instant communication
+
 ## Version 1.6 - February 3, 2026
 ### Added
 - Google Calendar integration with embed functionality
