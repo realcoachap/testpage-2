@@ -1,5 +1,13 @@
 # EliteFit Personal Training Website - Changelog
 
+## Version 1.9 - February 4, 2026
+### Added
+- Availability checking and time slot selection for calendar
+- Modal interface for detailed time slot selection
+- Color-coded availability indicators (Available/Busy/Limited)
+- Realistic booking flow with time slot selection
+- Backend-ready architecture for real availability data
+
 ## Version 1.8 - February 3, 2026
 ### Changed
 - Updated branding from "EliteFit Training" to "Ascended Fitness by Coach AP"
