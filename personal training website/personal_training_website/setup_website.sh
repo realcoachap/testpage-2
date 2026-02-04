@@ -1,0 +1,43 @@
+#!/bin/bash
+# Script to set up the personal training website
+
+echo "==========================================="
+echo "EliteFit Personal Training Website Setup"
+echo "==========================================="
+
+echo ""
+echo "Created files:"
+echo "- personal_training_website.html (Main landing page)"
+echo "- client_portal.html (Client dashboard with workout tracking)"
+echo "- personal_training_website_proposal.txt (Detailed feature proposal)"
+echo "- WEBSITE_README.md (Setup instructions)"
+
+echo ""
+echo "Website Features Summary:"
+echo "1. Responsive design for all devices"
+echo "2. Client portal with workout tracking"
+echo "3. Nutrition logging interface"
+echo "4. Progress tracking dashboard"
+echo "5. Messaging system between clients and trainer"
+echo "6. Booking and scheduling functionality"
+echo "7. Progress photo tracking"
+echo "8. Habit tracking features"
+echo "9. Video exercise library interface"
+echo "10. Nutrition coaching tools"
+
+echo ""
+echo "To view the website:"
+echo "1. Open personal_training_website.html in your browser for the main site"
+echo "2. Open client_portal.html in your browser for the client dashboard"
+echo ""
+echo "Next steps for full implementation:"
+echo "- Add backend functionality (Node.js/PHP)"
+echo "- Integrate with fitness tracking APIs"
+echo "- Add payment processing"
+echo "- Implement secure user authentication"
+echo "- Deploy to web hosting platform"
+
+echo ""
+echo "==========================================="
+echo "Website package created successfully!"
+echo "==========================================="

@@ -1,0 +1,48 @@
+# How to Use the Setup Script (.sh file)
+
+## What is a .sh file?
+A .sh file is a shell script used in Linux, Mac, and Unix systems. It contains commands that can be executed by the computer's terminal/shell.
+
+## Step-by-Step Instructions:
+
+### 1. Open Terminal
+- On Mac: Press Cmd+Space, type "Terminal", press Enter
+- On Linux: Press Ctrl+Alt+T or search for "Terminal"
+- On Windows: Use Git Bash or WSL (Windows Subsystem for Linux)
+
+### 2. Navigate to the Directory
+Type this command and press Enter:
+```
+cd "/home/coachap/.openclaw/workspace/personal training website"
+```
+
+### 3. Make the Script Executable
+Type this command and press Enter:
+```
+chmod +x setup_website.sh
+```
+This tells the computer that this file can be run as a program.
+
+### 4. Run the Script
+Type this command and press Enter:
+```
+./setup_website.sh
+```
+The "./" means "run the file in the current folder".
+
+### 5. The script will display:
+- Information about the website files
+- List of all features included
+- Instructions on how to view the website
+- Next steps for implementation
+
+## Alternative: Double-click method
+Some systems allow you to double-click the .sh file, but this depends on your operating system settings. The terminal method is more reliable.
+
+## Troubleshooting:
+- If you get a "Permission denied" error, run: `chmod +x setup_website.sh` again
+- If the file doesn't run, make sure you're in the correct directory
+- On Windows, you may need to install Git Bash or WSL to run shell scripts
+
+## What the script does:
+The setup_website.sh script simply displays information about your personal training website package. It doesn't install anything or change your system - it just shows you what's included and how to use it.

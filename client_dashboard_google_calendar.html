@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Dashboard | Ascended Fitness by Coach AP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #e74c3c;
+            --accent-color: #3498db;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--secondary-color);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-greeting {
+            font-weight: bold;
+        }
+        
+        .logout-btn {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        /* Dashboard Layout */
+        .dashboard {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: white;
+            padding: 1.5rem 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            height: calc(100vh - 70px);
+            position: fixed;
+            overflow-y: auto;
+            z-index: 10;
+        }
+        
+        .nav-links {
+            list-style: none;
+            padding: 0 1rem;
+        }
+        
+        .nav-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-radius: 5px;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--light-color);
+            color: var(--primary-color);
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .nav-links a i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem 2rem 2rem 270px; /* 270px to account for sidebar */
+            min-height: calc(100vh - 70px);
+        }
+        
+        .page-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .date-display {
+            font-size: 1rem;
+            color: #777;
+        }
+        
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-icon {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+        }
+        
+        /* Progress Section */
+        .progress-container {
+            margin: 1.5rem 0;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--success-color);
+            width: 75%;
+        }
+        
+        /* Stats Section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        /* Workout Section */
+        .workout-list {
+            list-style: none;
+        }
+        
+        .workout-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .workout-item:last-child {
+            border-bottom: none;
+        }
+        
+        .workout-header {
+            flex: 1;
+        }
+        
+        .workout-title {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.3rem;
+        }
+        
+        .workout-meta {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        .workout-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+            transition: background 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #27ae60;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+        }
+        
+        .btn-outline:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+        
+        /* Nutrition Section */
+        .nutrition-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .macro-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--light-color);
+            border-radius: 5px;
+        }
+        
+        .macro-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .macro-label {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        /* Messages Section */
+        .message-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .message-item:last-child {
+            border-bottom: none;
+        }
+        
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .message-content {
+            flex: 1;
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.3rem;
+        }
+        
+        .message-sender {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .message-time {
+            font-size: 0.8rem;
+            color: #777;
+        }
+        
+        .message-text {
+            font-size: 0.95rem;
+        }
+        
+        /* Upcoming Sessions */
+        .session-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .session-item:last-child {
+            border-bottom: none;
+        }
+        
+        .session-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--light-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+        }
+        
+        .session-info {
+            flex: 1;
+        }
+        
+        .session-title {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .session-time {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        /* Calendar Section (Initially Hidden) */
+        .calendar-section {
+            display: none;
+            margin-top: 2rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .calendar-section.visible {
+            display: block !important;
+            opacity: 1;
+        }
+        
+        .calendar-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            min-height: 600px;
+            position: relative;
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .calendar-nav button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #ddd;
+            border: 1px solid #ddd;
+        }
+        
+        .calendar-day-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .calendar-day {
+            background: white;
+            min-height: 80px;
+            padding: 5px;
+            cursor: pointer;
+            border: 1px solid #eee;
+        }
+        
+        .calendar-day:hover {
+            background: #f0f8ff;
+        }
+        
+        .calendar-day-number {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .calendar-event {
+            font-size: 0.8rem;
+            padding: 2px 4px;
+            margin: 2px 0;
+            border-radius: 3px;
+            background: var(--accent-color);
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* Google Calendar Section */
+        .google-calendar-section {
+            display: none;
+            margin-top: 2rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .google-calendar-section.visible {
+            display: block !important;
+            opacity: 1;
+        }
+        
+        .google-calendar-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            min-height: 600px;
+            position: relative;
+        }
+        
+        .google-calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .google-calendar-iframe {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .calendar-instructions {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            color: #856404;
+        }
+        
+        /* Messages Section (Initially Hidden) */
+        .messages-section {
+            display: none;
+            margin-top: 2rem;
+        }
+        
+        .messages-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+        
+        /* Calorie Calculator Section (Initially Hidden) */
+        .calculator-section {
+            display: none;
+            margin-top: 2rem;
+        }
+        
+        .calculator-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+        
+        .calculator-form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+            }
+            
+            .nav-links a span {
+                display: none;
+            }
+            
+            .nav-links a i {
+                margin-right: 0;
+                font-size: 1.5rem;
+            }
+            
+            .main-content {
+                padding-left: 90px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                padding: 2rem 1rem;
+            }
+            
+            .nav-links {
+                display: flex;
+                overflow-x: auto;
+                padding: 0.5rem;
+            }
+            
+            .nav-links li {
+                margin-bottom: 0;
+                margin-right: 0.5rem;
+            }
+            
+            .nav-links a {
+                min-width: 80px;
+                justify-content: center;
+                padding: 10px;
+            }
+            
+            .nav-links a span {
+                display: block;
+            }
+            
+            .page-title {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .nutrition-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">Elite<span>Fit</span> Portal</a>
+            <div class="user-info">
+                <span class="user-greeting">Welcome, John!</span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard -->
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <ul class="nav-links">
+                <li><a href="#" class="active" onclick="showSection('dashboard', event)"><i class="fas fa-chart-line"></i> <span>Dashboard</span></a></li>
+                <li><a href="#" onclick="showSection('workouts', event)"><i class="fas fa-dumbbell"></i> <span>My Workouts</span></a></li>
+                <li><a href="#" onclick="showSection('nutrition', event)"><i class="fas fa-utensils"></i> <span>Nutrition Plan</span></a></li>
+                <li><a href="#" onclick="showSection('progress', event)"><i class="fas fa-chart-bar"></i> <span>Progress</span></a></li>
+                <li><a href="#" onclick="showSection('photos', event)"><i class="fas fa-camera"></i> <span>Progress Photos</span></a></li>
+                <li><a href="#" onclick="showSection('measurements', event)"><i class="fas fa-ruler-vertical"></i> <span>Measurements</span></a></li>
+                <li><a href="#" onclick="showSection('goals', event)"><i class="fas fa-bullseye"></i> <span>Goals</span></a></li>
+                <li><a href="#" onclick="showSection('messages', event)"><i class="fas fa-comments"></i> <span>Messages</span></a></li>
+                <li><a href="#" onclick="showSection('schedule', event)"><i class="fas fa-calendar-alt"></i> <span>Schedule</span></a></li>
+                <li><a href="#" onclick="showSection('google-calendar', event)"><i class="fas fa-google"></i> <span>Google Calendar</span></a></li>
+                <li><a href="#" onclick="showSection('calculator', event)"><i class="fas fa-calculator"></i> <span>Calorie Calculator</span></a></li>
+                <li><a href="#" onclick="showSection('resources', event)"><i class="fas fa-book"></i> <span>Resources</span></a></li>
+                <li><a href="#" onclick="showSection('settings', event)"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-title">
+                <h1>Dashboard</h1>
+                <div class="date-display" id="currentDate"></div>
+            </div>
+            
+            <!-- Stats Overview -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Workouts This Week</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">87%</div>
+                    <div class="stat-label">Goal Completion</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">14 lbs</div>
+                    <div class="stat-label">Lost</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+            </div>
+
+            <!-- Dashboard Cards -->
+            <div class="dashboard-grid">
+                <!-- Today's Workout -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><span class="card-icon">💪</span> Today's Workout</h3>
+                    </div>
+                    <p><strong>Upper Body Strength</strong></p>
+                    <p>Complete 3 rounds of:</p>
+                    <ul class="workout-list">
+                        <li class="workout-item">Push-ups: 3 sets of 12</li>
+                        <li class="workout-item">Pull-ups: 3 sets of 8</li>
+                        <li class="workout-item">Shoulder Press: 3 sets of 10</li>
+                        <li class="workout-item">Plank: 3 sets of 45 sec</li>
+                    </ul>
+                    <div style="margin-top: 1rem;">
+                        <button class="btn btn-success">Mark Complete</button>
+                        <button class="btn btn-outline">View Details</button>
+                    </div>
+                </div>
+
+                <!-- Nutrition Tracking -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><span class="card-icon">🥗</span> Today's Nutrition</h3>
+                    </div>
+                    <p><strong>Calories Consumed: 1,842/2,000</strong></p>
+                    <div class="nutrition-grid">
+                        <div class="macro-item">
+                            <div class="macro-value">142g</div>
+                            <div class="macro-label">Protein</div>
+                        </div>
+                        <div class="macro-item">
+                            <div class="macro-value">210g</div>
+                            <div class="macro-label">Carbs</div>
+                        </div>
+                        <div class="macro-item">
+                            <div class="macro-value">68g</div>
+                            <div class="macro-label">Fat</div>
+                        </div>
+                        <div class="macro-item">
+                            <div class="macro-value">8/10</div>
+                            <div class="macro-label">Water</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top: 1rem;">Log Meal</button>
+                </div>
+
+                <!-- Progress -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><span class="card-icon">📊</span> Goal Progress</h3>
+                    </div>
+                    <p>Lose 20 lbs in 10 weeks</p>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <p>14 lbs remaining (75% to goal)</p>
+                    </div>
+                    <p><strong>Last Weigh-in:</strong> 2 days ago</p>
+                    <button class="btn btn-primary" style="margin-top: 1rem;">Update Weight</button>
+                </div>
+            </div>
+
+            <!-- Additional Sections -->
+            <div class="dashboard-grid">
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><span class="card-icon">🔥</span> Recent Activity</h3>
+                    </div>
+                    <ul class="workout-list">
+                        <li class="workout-item">
+                            <div class="workout-header">
+                                <div class="workout-title">Cardio Blast</div>
+                                <div class="workout-meta">Today, 7:30 AM</div>
+                            </div>
+                            <div class="workout-actions">
+                                <button class="btn btn-outline">View</button>
+                            </div>
+                        </li>
+                        <li class="workout-item">
+                            <div class="workout-header">
+                                <div class="workout-title">Lower Body Strength</div>
+                                <div class="workout-meta">Yesterday, 6:00 PM</div>
+                            </div>
+                            <div class="workout-actions">
+                                <button class="btn btn-outline">View</button>
+                            </div>
+                        </li>
+                        <li class="workout-item">
+                            <div class="workout-header">
+                                <div class="workout-title">Core & Flexibility</div>
+                                <div class="workout-meta">Feb 1, 8:00 AM</div>
+                            </div>
+                            <div class="workout-actions">
+                                <button class="btn btn-outline">View</button>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Messages -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><span class="card-icon">💬</span> Messages</h3>
+                    </div>
+                    <div class="message-item">
+                        <div class="message-avatar">T</div>
+                        <div class="message-content">
+                            <div class="message-header">
+                                <div class="message-sender">Trainer</div>
+                                <div class="message-time">2 hours ago</div>
+                            </div>
+                            <div class="message-text">Great job on completing your last 3 workouts with 95% form accuracy. I've adjusted your next week's program to increase the challenge slightly.</div>
+                        </div>
+                    </div>
+                    <div class="message-item">
+                        <div class="message-avatar">T</div>
+                        <div class="message-content">
+                            <div class="message-header">
+                                <div class="message-sender">Trainer</div>
+                                <div class="message-time">Yesterday</div>
+                            </div>
+                            <div class="message-text">Don't forget your check-in appointment this Friday. Looking forward to seeing your progress photos!</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top: 1rem;">View All Messages</button>
+                </div>
+
+                <!-- Upcoming Sessions -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><span class="card-icon">📅</span> Upcoming Sessions</h3>
+                    </div>
+                    <div class="session-item">
+                        <div class="session-icon">🏋️</div>
+                        <div class="session-info">
+                            <div class="session-title">Personal Training</div>
+                            <div class="session-time">Tomorrow, 6:00 PM</div>
+                        </div>
+                        <button class="btn btn-outline">Reschedule</button>
+                    </div>
+                    <div class="session-item">
+                        <div class="session-icon">🥗</div>
+                        <div class="session-info">
+                            <div class="session-title">Nutrition Consultation</div>
+                            <div class="session-time">Feb 6, 10:00 AM</div>
+                        </div>
+                        <button class="btn btn-outline">Reschedule</button>
+                    </div>
+                    <div class="session-item">
+                        <div class="session-icon">📏</div>
+                        <div class="session-info">
+                            <div class="session-title">Body Composition Scan</div>
+                            <div class="session-time">Feb 8, 2:00 PM</div>
+                        </div>
+                        <button class="btn btn-outline">Reschedule</button>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top: 1rem;">View Schedule</button>
+                </div>
+            </div>
+
+            <!-- Traditional Calendar Section -->
+            <div id="scheduleSection" class="calendar-section">
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <h3>Interactive Calendar</h3>
+                        <div class="calendar-nav">
+                            <button onclick="prevMonth()"><i class="fas fa-chevron-left"></i></button>
+                            <button onclick="today()">Today</button>
+                            <button onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div id="calendarGrid" class="calendar-grid">
+                        <!-- Calendar will be generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Google Calendar Section -->
+            <div id="googleCalendarSection" class="google-calendar-section">
+                <div class="google-calendar-container">
+                    <div class="google-calendar-header">
+                        <h3>Google Calendar Integration</h3>
+                    </div>
+                    <div class="calendar-instructions">
+                        <p><strong>Instructions for Google Calendar Integration:</strong></p>
+                        <ol>
+                            <li>Go to <a href="https://calendar.google.com" target="_blank">Google Calendar</a></li>
+                            <li>Click on Settings (gear icon) → Settings</li>
+                            <li>Select "Integrate calendar" from the left menu</li>
+                            <li>Copy your calendar's embed code</li>
+                            <li>Paste it below or use the iframe method</li>
+                        </ol>
+                    </div>
+                    <p>Embed your Google Calendar using the public URL:</p>
+                    <input type="text" id="googleCalendarUrl" class="form-control" placeholder="Paste your Google Calendar public URL here" style="margin-bottom: 1rem;">
+                    <button class="btn btn-primary" onclick="embedGoogleCalendar()">Embed Calendar</button>
+                    <div id="googleCalendarIframeContainer">
+                        <!-- Google Calendar iframe will be inserted here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages Section -->
+            <div id="messagesSection" class="messages-section">
+                <div class="messages-container">
+                    <h3>Messages</h3>
+                    <p>Message functionality coming soon...</p>
+                </div>
+            </div>
+
+            <!-- Calorie Calculator Section -->
+            <div id="calculatorSection" class="calculator-section">
+                <div class="calculator-container">
+                    <h3>Calorie Calculator</h3>
+                    <div class="calculator-form">
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <select id="gender" class="form-control">
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="age">Age</label>
+                            <input type="number" id="age" class="form-control" placeholder="Enter your age">
+                        </div>
+                        <div class="form-group">
+                            <label for="weight">Weight (lbs)</label>
+                            <input type="number" id="weight" class="form-control" placeholder="Enter your weight">
+                        </div>
+                        <div class="form-group">
+                            <label for="height">Height (inches)</label>
+                            <input type="number" id="height" class="form-control" placeholder="Enter your height">
+                        </div>
+                        <div class="form-group">
+                            <label for="activity">Activity Level</label>
+                            <select id="activity" class="form-control">
+                                <option value="1.2">Sedentary (little or no exercise)</option>
+                                <option value="1.375">Lightly active (light exercise 1-3 days/week)</option>
+                                <option value="1.55">Moderately active (moderate exercise 3-5 days/week)</option>
+                                <option value="1.725">Very active (hard exercise 6-7 days/week)</option>
+                                <option value="1.9">Extra active (very hard exercise & physical job)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="goal">Goal</label>
+                            <select id="goal" class="form-control">
+                                <option value="maintain">Maintain weight</option>
+                                <option value="lose">Lose weight</option>
+                                <option value="gain">Gain weight</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="calculateCalories()">Calculate Calories</button>
+                        <div id="calorieResult" style="margin-top: 1rem; font-weight: bold;"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Set current date
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
+
+        // Calendar variables
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Show selected section - COMPLETELY REVISED VERSION WITH ENHANCED VISIBILITY
+        function showSection(section, evt) {
+            console.log("showSection called with:", section); // Debug log
+            
+            // Prevent default behavior and stop propagation
+            if (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+            }
+            
+            // Hide all sections first
+            const allSections = document.querySelectorAll('.calendar-section, .google-calendar-section, .messages-section, .calculator-section, .dashboard-grid');
+            allSections.forEach(sec => {
+                if (sec) {
+                    sec.style.display = 'none';
+                    sec.classList.remove('visible');
+                }
+            });
+            
+            // Show dashboard by default
+            document.querySelectorAll('.dashboard-grid').forEach(grid => {
+                grid.style.display = 'grid';
+            });
+            
+            // Update active nav link
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Find the clicked element and mark it as active
+            if (evt && evt.target) {
+                let target = evt.target;
+                // If the click was on the icon or span inside the link, get the parent link
+                while (target && target.tagName !== 'A') {
+                    target = target.parentElement;
+                    if (!target) break;
+                }
+                if (target) {
+                    target.classList.add('active');
+                }
+            }
+
+            // Show selected section with enhanced visibility
+            setTimeout(() => {
+                switch(section) {
+                    case 'schedule':
+                        console.log("Showing schedule section");
+                        document.querySelectorAll('.dashboard-grid').forEach(grid => {
+                            grid.style.display = 'none';
+                        });
+                        
+                        const scheduleSection = document.getElementById('scheduleSection');
+                        if (scheduleSection) {
+                            scheduleSection.style.display = 'block';
+                            scheduleSection.classList.add('visible');
+                            
+                            // Force layout recalculation
+                            scheduleSection.offsetHeight;
+                            
+                            // Smooth scroll to section
+                            scheduleSection.scrollIntoView({ 
+                                behavior: 'smooth', 
+                                block: 'start',
+                                inline: 'nearest'
+                            });
+                            
+                            // Generate calendar after ensuring visibility
+                            setTimeout(() => {
+                                generateCalendar(currentMonth, currentYear);
+                                console.log("Calendar generated");
+                                
+                                // Additional forced visibility for calendar section
+                                scheduleSection.style.visibility = 'visible';
+                                scheduleSection.style.opacity = '1';
+                            }, 100);
+                        }
+                        break;
+                        
+                    case 'google-calendar':
+                        console.log("Showing Google Calendar section");
+                        document.querySelectorAll('.dashboard-grid').forEach(grid => {
+                            grid.style.display = 'none';
+                        });
+                        
+                        const googleCalendarSection = document.getElementById('googleCalendarSection');
+                        if (googleCalendarSection) {
+                            googleCalendarSection.style.display = 'block';
+                            googleCalendarSection.classList.add('visible');
+                            
+                            // Force layout recalculation
+                            googleCalendarSection.offsetHeight;
+                            
+                            // Smooth scroll to section
+                            googleCalendarSection.scrollIntoView({ 
+                                behavior: 'smooth', 
+                                block: 'start',
+                                inline: 'nearest'
+                            });
+                            
+                            // Additional forced visibility for Google calendar section
+                            googleCalendarSection.style.visibility = 'visible';
+                            googleCalendarSection.style.opacity = '1';
+                        }
+                        break;
+                        
+                    case 'messages':
+                        document.querySelectorAll('.dashboard-grid').forEach(grid => {
+                            grid.style.display = 'none';
+                        });
+                        
+                        const messagesSection = document.getElementById('messagesSection');
+                        if (messagesSection) {
+                            messagesSection.style.display = 'block';
+                        }
+                        break;
+                        
+                    case 'calculator':
+                        document.querySelectorAll('.dashboard-grid').forEach(grid => {
+                            grid.style.display = 'none';
+                        });
+                        
+                        const calculatorSection = document.getElementById('calculatorSection');
+                        if (calculatorSection) {
+                            calculatorSection.style.display = 'block';
+                        }
+                        break;
+                        
+                    case 'dashboard':
+                    default:
+                        document.querySelectorAll('.dashboard-grid').forEach(grid => {
+                            grid.style.display = 'grid';
+                        });
+                        break;
+                }
+            }, 50); // Small delay to ensure proper rendering
+        }
+
+        // Enhanced calendar functions
+        function generateCalendar(month, year) {
+            const calendarGrid = document.getElementById('calendarGrid');
+            if (!calendarGrid) {
+                console.error("calendarGrid element not found!");
+                return;
+            }
+            
+            calendarGrid.innerHTML = '';
+
+            // Add day headers
+            const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            daysOfWeek.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'calendar-day-header';
+                dayHeader.textContent = day;
+                calendarGrid.appendChild(dayHeader);
+            });
+
+            // Get first day of month and number of days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Add empty cells for days before the first day
+            for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'calendar-day';
+                calendarGrid.appendChild(emptyCell);
+            }
+
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'calendar-day';
+                
+                // Highlight today
+                const today = new Date();
+                if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                    dayCell.style.backgroundColor = '#e3f2fd';
+                    dayCell.style.border = '2px solid #2196f3';
+                }
+                
+                // Fixed the event handler to pass correct parameters
+                dayCell.onclick = function() {
+                    selectDay(day, month, year);
+                };
+                
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'calendar-day-number';
+                dayNumber.textContent = day;
+                dayCell.appendChild(dayNumber);
+
+                // Add sample events for demonstration
+                if (day % 7 === 0) {
+                    const event = document.createElement('div');
+                    event.className = 'calendar-event';
+                    event.textContent = 'PT Session';
+                    dayCell.appendChild(event);
+                } else if (day % 5 === 0) {
+                    const event = document.createElement('div');
+                    event.className = 'calendar-event';
+                    event.textContent = 'Check-in';
+                    dayCell.appendChild(event);
+                } else if (day % 3 === 0) {
+                    const event = document.createElement('div');
+                    event.className = 'calendar-event';
+                    event.textContent = 'Workout';
+                    dayCell.appendChild(event);
+                }
+
+                calendarGrid.appendChild(dayCell);
+            }
+        }
+
+        function selectDay(day, month, year) {
+            alert(`Selected date: ${month + 1}/${day}/${year}\nYou can add events like workout of the day, body stats, meals, etc.`);
+        }
+
+        function prevMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar(currentMonth, currentYear);
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar(currentMonth, currentYear);
+        }
+
+        function today() {
+            currentDate = new Date();
+            currentMonth = currentDate.getMonth();
+            currentYear = currentDate.getFullYear();
+            generateCalendar(currentMonth, currentYear);
+        }
+
+        // Google Calendar embedding function
+        function embedGoogleCalendar() {
+            const urlInput = document.getElementById('googleCalendarUrl');
+            const url = urlInput.value.trim();
+            
+            if (!url) {
+                alert('Please enter a Google Calendar URL');
+                return;
+            }
+            
+            // Validate if it's a Google Calendar URL
+            if (!url.includes('calendar.google.com') && !url.includes('google.com/calendar')) {
+                alert('Please enter a valid Google Calendar URL');
+                return;
+            }
+            
+            // Extract calendar ID from URL if it's a regular Google Calendar link
+            let calendarUrl = url;
+            
+            // If it's a public embed URL, use it directly
+            if (url.includes('embed?src=')) {
+                calendarUrl = url;
+            } else if (url.includes('calendar.google.com')) {
+                // Convert regular calendar URL to embed URL
+                const regex = /calendar\/(.*)\/(.*)\?cid=(.*)/;
+                if (regex.test(url)) {
+                    // If it's already an embed URL
+                    calendarUrl = url;
+                } else {
+                    // Attempt to convert to embed format
+                    const embedMatch = url.match(/calendar.google.com\/calendar\/u\/\d+\/embedded\?src=([a-zA-Z0-9%_.-]+)/);
+                    if (embedMatch) {
+                        calendarUrl = `https://calendar.google.com/calendar/embed?src=${embedMatch[1]}`;
+                    } else {
+                        // If we can't parse it, try to use the original URL
+                        calendarUrl = url;
+                    }
+                }
+            }
+            
+            const iframeContainer = document.getElementById('googleCalendarIframeContainer');
+            iframeContainer.innerHTML = `
+                <iframe src="${calendarUrl}" 
+                        class="google-calendar-iframe"
+                        frameborder="0" 
+                        scrolling="no">
+                </iframe>
+            `;
+        }
+
+        // Calorie calculator
+        function calculateCalories() {
+            const gender = document.getElementById('gender').value;
+            const age = parseInt(document.getElementById('age').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const activity = parseFloat(document.getElementById('activity').value);
+            const goal = document.getElementById('goal').value;
+
+            if (!age || !weight || !height) {
+                document.getElementById('calorieResult').textContent = 'Please fill in all required fields.';
+                return;
+            }
+
+            let bmr;
+            if (gender === 'male') {
+                bmr = 66 + (6.23 * weight) + (12.7 * height) - (6.8 * age);
+            } else {
+                bmr = 655 + (4.35 * weight) + (4.7 * height) - (4.7 * age);
+            }
+
+            let tdee = bmr * activity;
+
+            // Adjust based on goal
+            if (goal === 'lose') {
+                tdee -= 500; // 500 calorie deficit for weight loss
+            } else if (goal === 'gain') {
+                tdee += 500; // 500 calorie surplus for weight gain
+            }
+
+            document.getElementById('calorieResult').innerHTML = `
+                <p>Your Basal Metabolic Rate (BMR): <strong>${Math.round(bmr)} calories/day</strong></p>
+                <p>Your Total Daily Energy Expenditure (TDEE): <strong>${Math.round(tdee)} calories/day</strong></p>
+                <p>Recommended daily calories for ${goal === 'lose' ? 'weight loss' : goal === 'gain' ? 'weight gain' : 'maintenance'}: <strong>${Math.round(tdee)} calories</strong></p>
+            `;
+        }
+
+        // Initialize calendar on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM loaded, initializing calendar");
+            generateCalendar(currentMonth, currentYear);
+        });
+        
+        // Additional initialization to ensure functionality
+        window.onload = function() {
+            console.log("Window loaded");
+        };
+    </script>
+</body>
+</html>

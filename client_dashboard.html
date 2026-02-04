@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Dashboard | Ascended Fitness by Coach AP</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #e74c3c;
+            --accent-color: #3498db;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--secondary-color);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-greeting {
+            font-weight: bold;
+        }
+        
+        .logout-btn {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        /* Dashboard Layout */
+        .dashboard {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: white;
+            padding: 1.5rem 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            height: calc(100vh - 70px);
+            position: fixed;
+            overflow-y: auto;
+        }
+        
+        .nav-links {
+            list-style: none;
+            padding: 0 1rem;
+        }
+        
+        .nav-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-radius: 5px;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--light-color);
+            color: var(--primary-color);
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .nav-links a i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem 2rem 2rem 270px; /* 270px to account for sidebar */
+        }
+        
+        .page-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .date-display {
+            font-size: 1rem;
+            color: #777;
+        }
+        
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-icon {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+        }
+        
+        /* Progress Section */
+        .progress-container {
+            margin: 1.5rem 0;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--success-color);
+            width: 75%;
+        }
+        
+        /* Stats Section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        /* Workout Section */
+        .workout-list {
+            list-style: none;
+        }
+        
+        .workout-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .workout-item:last-child {
+            border-bottom: none;
+        }
+        
+        .workout-header {
+            flex: 1;
+        }
+        
+        .workout-title {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.3rem;
+        }
+        
+        .workout-meta {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        .workout-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+            transition: background 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #27ae60;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+        }
+        
+        .btn-outline:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+        
+        /* Nutrition Section */
+        .nutrition-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .macro-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--light-color);
+            border-radius: 5px;
+        }
+        
+        .macro-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .macro-label {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        /* Messages Section */
+        .message-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .message-item:last-child {
+            border-bottom: none;
+        }
+        
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .message-content {
+            flex: 1;
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.3rem;
+        }
+        
+        .message-sender {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .message-time {
+            font-size: 0.8rem;
+            color: #777;
+        }
+        
+        .message-text {
+            font-size: 0.95rem;
+        }
+        
+        /* Upcoming Sessions */
+        .session-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .session-item:last-child {
+            border-bottom: none;
+        }
+        
+        .session-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--light-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+        }
+        
+        .session-info {
+            flex: 1;
+        }
+        
+        .session-title {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .session-time {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+            }
+            
+            .nav-links a span {
+                display: none;
+            }
+            
+            .nav-links a i {
+                margin-right: 0;
+                font-size: 1.5rem;
+            }
+            
+            .main-content {
+                padding-left: 90px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                padding: 2rem 1rem;
+            }
+            
+            .nav-links {
+                display: flex;
+                overflow-x: auto;
+                padding: 0.5rem;
+            }
+            
+            .nav-links li {
+                margin-bottom: 0;
+                margin-right: 0.5rem;
+            }
+            
+            .nav-links a {
+                min-width: 80px;
+                justify-content: center;
+                padding: 10px;
+            }
+            
+            .nav-links a span {
+                display: block;
+            }
+            
+            .page-title {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .nutrition-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">Elite<span>Fit</span> Portal</a>
+            <div class="user-info">
+                <span class="user-greeting">Welcome, John!</span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard -->
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <ul class="nav-links">
+                <li><a href="#" class="active"><i>📊</i> <span>Dashboard</span></a></li>
+                <li><a href="#"><i>💪</i> <span>My Workouts</span></a></li>
+                <li><a href="#"><i>🥗</i> <span>Nutrition Plan</span></a></li>
+                <li><a href="#"><i>📈</i> <span>Progress</span></a></li>
+                <li><a href="#"><i>📷</i> <span>Progress Photos</span></a></li>
+                <li><a href="#"><i>📝</i> <span>Measurements</span></a></li>
+                <li><a href="#"><i>🎯</i> <span>Goals</span></a></li>
+                <li><a href="#"><i>💬</i> <span>Messages</span></a></li>
+                <li><a href="#"><i>📅</i> <span>Schedule</span></a></li>
+                <li><a href="#"><i>📚</i> <span>Resources</span></a></li>
+                <li><a href="#"><i>⚙️</i> <span>Settings</span></a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-title">
+                <h1>Dashboard</h1>
+                <div class="date-display" id="currentDate"></div>
+            </div>
+            
+            <!-- Stats Overview -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Workouts This Week</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">87%</div>
+                    <div class="stat-label">Goal Completion</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">14 lbs</div>
+                    <div class="stat-label">Lost</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+            </div>
+
+            <!-- Dashboard Cards -->
+            <div class="dashboard-grid">
+                <!-- Today's Workout -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><span class="card-icon">💪</span> Today's Workout</h3>
+                    </div>
+                    <p><strong>Upper Body Strength</strong></p>
+                    <p>Complete 3 rounds of:</p>
+                    <ul class="workout-list">
+                        <li class="workout-item">Push-ups: 3 sets of 12</li>
+                        <li class="workout-item">Pull-ups: 3 sets of 8</li>
+                        <li class="workout-item">Shoulder Press: 3 sets of 10</li>
+                        <li class="workout-item">Plank: 3 sets of 45 sec</li>
+                    </ul>
+                    <div style="margin-top: 1rem;">
+                        <button class="btn btn-success">Mark Complete</button>
+                        <button class="btn btn-outline">View Details</button>
+                    </div>
+                </div>
+
+                <!-- Nutrition Tracking -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><span class="card-icon">🥗</span> Today's Nutrition</h3>
+                    </div>
+                    <p><strong>Calories Consumed: 1,842/2,000</strong></p>
+                    <div class="nutrition-grid">
+                        <div class="macro-item">
+                            <div class="macro-value">142g</div>
+                            <div class="macro-label">Protein</div>
+                        </div>
+                        <div class="macro-item">
+                            <div class="macro-value">210g</div>
+                            <div class="macro-label">Carbs</div>
+                        </div>
+                        <div class="macro-item">
+                            <div class="macro-value">68g</div>
+                            <div class="macro-label">Fat</div>
+                        </div>
+                        <div class="macro-item">
+                            <div class="macro-value">8/10</div>
+                            <div class="macro-label">Water</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top: 1rem;">Log Meal</button>
+                </div>
+
+                <!-- Progress -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><span class="card-icon">📊</span> Goal Progress</h3>
+                    </div>
+                    <p>Lose 20 lbs in 10 weeks</p>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <p>14 lbs remaining (75% to goal)</p>
+                    </div>
+                    <p><strong>Last Weigh-in:</strong> 2 days ago</p>
+                    <button class="btn btn-primary" style="margin-top: 1rem;">Update Weight</button>
+                </div>
+            </div>
+
+            <!-- Additional Sections -->
+            <div class="dashboard-grid">
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><span class="card-icon">🔥</span> Recent Activity</h3>
+                    </div>
+                    <ul class="workout-list">
+                        <li class="workout-item">
+                            <div class="workout-header">
+                                <div class="workout-title">Cardio Blast</div>
+                                <div class="workout-meta">Today, 7:30 AM</div>
+                            </div>
+                            <div class="workout-actions">
+                                <button class="btn btn-outline">View</button>
+                            </div>
+                        </li>
+                        <li class="workout-item">
+                            <div class="workout-header">
+                                <div class="workout-title">Lower Body Strength</div>
+                                <div class="workout-meta">Yesterday, 6:00 PM</div>
+                            </div>
+                            <div class="workout-actions">
+                                <button class="btn btn-outline">View</button>
+                            </div>
+                        </li>
+                        <li class="workout-item">
+                            <div class="workout-header">
+                                <div class="workout-title">Core & Flexibility</div>
+                                <div class="workout-meta">Feb 1, 8:00 AM</div>
+                            </div>
+                            <div class="workout-actions">
+                                <button class="btn btn-outline">View</button>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Messages -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><span class="card-icon">💬</span> Messages</h3>
+                    </div>
+                    <div class="message-item">
+                        <div class="message-avatar">T</div>
+                        <div class="message-content">
+                            <div class="message-header">
+                                <div class="message-sender">Trainer</div>
+                                <div class="message-time">2 hours ago</div>
+                            </div>
+                            <div class="message-text">Great job on completing your last 3 workouts with 95% form accuracy. I've adjusted your next week's program to increase the challenge slightly.</div>
+                        </div>
+                    </div>
+                    <div class="message-item">
+                        <div class="message-avatar">T</div>
+                        <div class="message-content">
+                            <div class="message-header">
+                                <div class="message-sender">Trainer</div>
+                                <div class="message-time">Yesterday</div>
+                            </div>
+                            <div class="message-text">Don't forget your check-in appointment this Friday. Looking forward to seeing your progress photos!</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top: 1rem;">View All Messages</button>
+                </div>
+
+                <!-- Upcoming Sessions -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><span class="card-icon">📅</span> Upcoming Sessions</h3>
+                    </div>
+                    <div class="session-item">
+                        <div class="session-icon">🏋️</div>
+                        <div class="session-info">
+                            <div class="session-title">Personal Training</div>
+                            <div class="session-time">Tomorrow, 6:00 PM</div>
+                        </div>
+                        <button class="btn btn-outline">Reschedule</button>
+                    </div>
+                    <div class="session-item">
+                        <div class="session-icon"> Nutrition</div>
+                        <div class="session-info">
+                            <div class="session-title">Nutrition Consultation</div>
+                            <div class="session-time">Feb 6, 10:00 AM</div>
+                        </div>
+                        <button class="btn btn-outline">Reschedule</button>
+                    </div>
+                    <div class="session-item">
+                        <div class="session-icon">📏</div>
+                        <div class="session-info">
+                            <div class="session-title">Body Composition Scan</div>
+                            <div class="session-time">Feb 8, 2:00 PM</div>
+                        </div>
+                        <button class="btn btn-outline">Reschedule</button>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top: 1rem;">View Schedule</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Set current date
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Navigation highlighting
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                document.querySelector('.nav-links a.active').classList.remove('active');
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
