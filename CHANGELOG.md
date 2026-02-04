@@ -1,5 +1,12 @@
 # EliteFit Personal Training Website - Changelog
 
+## Version 1.6 - February 3, 2026
+### Added
+- Google Calendar integration with embed functionality
+- New "Google Calendar" option in sidebar for professional calendar experience
+- Enhanced visibility fixes with forced display and scrolling behavior
+- Improved calendar styling with today's date highlighting
+
 ## Version 1.5 - February 3, 2026
 ### Fixed
 - Fixed login redirect to point to enhanced dashboard instead of old client portal
