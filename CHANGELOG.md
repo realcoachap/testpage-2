@@ -1,5 +1,13 @@
 # EliteFit Personal Training Website - Changelog
 
+## Version 1.5 - February 3, 2026
+### Fixed
+- Fixed login redirect to point to enhanced dashboard instead of old client portal
+- Replaced old client portal with redirect to enhanced dashboard
+- Added smooth scrolling to calendar section when Schedule link is clicked
+- Added CSS transitions for better visibility of calendar section
+- Removed redundant dashboard files to clean up repository
+
 ## Version 1.4 - February 3, 2026
 ### Fixed
 - Enhanced calendar functionality with debug logging and error handling
