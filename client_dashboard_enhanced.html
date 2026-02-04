@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Client Dashboard | Ascended Fitness by Coach AP</title>
+    <title>Client Dashboard | Ascended Calendar by Coach AP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -99,7 +99,6 @@
             height: calc(100vh - 70px);
             position: fixed;
             overflow-y: auto;
-            z-index: 10;
         }
         
         .nav-links {
@@ -136,7 +135,11 @@
         .main-content {
             flex: 1;
             padding: 2rem 2rem 2rem 270px; /* 270px to account for sidebar */
-            min-height: calc(100vh - 70px);
+        }
+        
+        .calendar-section {
+            display: none;
+            margin-top: 0;
         }
         
         .page-title {
@@ -430,337 +433,236 @@
         .calendar-section {
             display: none;
             margin-top: 2rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
         }
         
-        .calendar-section.visible {
-            display: block !important;
-            opacity: 1;
-        }
-        
-        .calendar-container {
+        /* Super Calendar Styles */
+        .super-calendar-container {
             background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-            min-height: 600px;
-            position: relative;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            min-height: calc(100vh - 200px);
         }
         
-        .calendar-header {
+        .super-calendar-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .super-calendar-header h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #4361ee, #3a0ca3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .super-calendar-controls {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
         }
         
-        .calendar-controls {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        
-        .calendar-nav {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .calendar-nav button {
-            background: var(--primary-color);
+        .super-control-btn {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
             color: white;
             border: none;
-            padding: 5px 10px;
-            border-radius: 3px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
             cursor: pointer;
-        }
-        
-        .theme-selector {
-            padding: 5px 10px;
-            border-radius: 3px;
-            border: 1px solid #ddd;
-        }
-        
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 1px;
-            background: #ddd;
-            border: 1px solid #ddd;
-        }
-        
-        .calendar-day-header {
-            background: var(--primary-color);
-            color: white;
-            padding: 10px;
-            text-align: center;
-            font-weight: bold;
-        }
-        
-        .calendar-day {
-            background: white;
-            min-height: 80px;
-            padding: 5px;
-            cursor: pointer;
-            border: 1px solid #eee;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-        
-        .calendar-day:hover {
-            background: #f0f8ff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        .calendar-day-number {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .calendar-event {
-            font-size: 0.8rem;
-            padding: 2px 4px;
-            margin: 2px 0;
-            border-radius: 3px;
-            background: var(--accent-color);
-            color: white;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        /* Availability Status */
-        .availability-status {
-            position: absolute;
-            bottom: 5px;
-            left: 5px;
-            right: 5px;
-            text-align: center;
-            font-size: 0.7rem;
-            padding: 2px;
-            border-radius: 3px;
-        }
-        
-        .available {
-            background: var(--success-color);
-            color: white;
-        }
-        
-        .busy {
-            background: var(--danger-color);
-            color: white;
-        }
-        
-        .limited {
-            background: var(--warning-color);
-            color: white;
-        }
-        
-        /* Theme Classes */
-        .theme-professional {
-            --primary-color: #2c3e50;
-            --secondary-color: #34495e;
-            --accent-color: #3498db;
-        }
-        
-        .theme-fun {
-            --primary-color: #e74c3c;
-            --secondary-color: #f39c12;
-            --accent-color: #9b59b6;
-        }
-        
-        .theme-elegant {
-            --primary-color: #8e44ad;
-            --secondary-color: #16a085;
-            --accent-color: #f1c40f;
-        }
-        
-        .theme-sporty {
-            --primary-color: #27ae60;
-            --secondary-color: #e67e22;
-            --accent-color: #e74c3c;
-        }
-        
-        /* Time Slot Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-        
-        .modal-content {
-            background-color: white;
-            margin: 15% auto;
-            padding: 20px;
-            border-radius: 8px;
-            width: 80%;
-            max-width: 500px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-        
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
-        .close:hover {
-            color: black;
-        }
-        
-        .time-slots {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 10px;
-            margin: 15px 0;
-        }
-        
-        .time-slot {
-            padding: 10px;
-            text-align: center;
-            background: #f0f0f0;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        
-        .time-slot:hover {
-            background: #e0e0e0;
-        }
-        
-        .time-slot.available {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .time-slot.busy {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        
-        .time-slot.limited {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        /* Google Calendar Section */
-        .google-calendar-section {
-            display: none;
-            margin-top: 2rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .google-calendar-section.visible {
-            display: block !important;
-            opacity: 1;
-        }
-        
-        .google-calendar-container {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-            min-height: 600px;
-            position: relative;
-        }
-        
-        .google-calendar-header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        
-        .google-calendar-iframe {
-            width: 100%;
-            height: 500px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        
-        .calendar-instructions {
-            margin: 1rem 0;
-            padding: 1rem;
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 5px;
-            color: #856404;
-        }
-        
-        /* WhatsApp Calendar Section */
-        .whatsapp-calendar-section {
-            display: none;
-            margin-top: 2rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .whatsapp-calendar-section.visible {
-            display: block !important;
-            opacity: 1;
-        }
-        
-        .whatsapp-calendar-container {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-            min-height: 600px;
-            position: relative;
-        }
-        
-        .whatsapp-calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        
-        .whatsapp-calendar-info {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            border-radius: 5px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .whatsapp-calendar-features {
-            margin: 1rem 0;
-        }
-        
-        .whatsapp-calendar-features ul {
-            padding-left: 1.5rem;
-        }
-        
-        .whatsapp-calendar-features li {
-            margin-bottom: 0.5rem;
-        }
-        
-        .whatsapp-button {
-            display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: #25D366;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
-        .whatsapp-button:hover {
-            background: #1da851;
+        .super-control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+        
+        .super-calendar-body {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+        }
+        
+        .super-sidebar {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            height: fit-content;
+        }
+        
+        .super-section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #4361ee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .super-month-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .super-month-day {
+            padding: 10px 5px;
+            text-align: center;
+            font-size: 0.9rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            min-height: 35px;
+        }
+        
+        .super-month-day.header {
+            font-weight: 700;
+            color: #777;
+            background: none !important;
+            cursor: default;
+        }
+        
+        .super-month-day:hover:not(.header) {
+            background-color: #e9ecef;
+            transform: scale(1.05);
+        }
+        
+        .super-month-day.today {
+            background-color: #4361ee;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .super-days-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .super-day-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+        
+        .super-day-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .super-day-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+        }
+        
+        .super-day-card.monday::before { background: linear-gradient(90deg, #a8e6cf, #80c9a9); }
+        .super-day-card.tuesday::before { background: linear-gradient(90deg, #fffac8, #f0e6a8); }
+        .super-day-card.wednesday::before { background: linear-gradient(90deg, #ffd3a5, #ffa87a); }
+        .super-day-card.thursday::before { background: linear-gradient(90deg, #ffb3ba, #ff8a94); }
+        .super-day-card.friday::before { background: linear-gradient(90deg, #b5ead7, #8ad8af); }
+        .super-day-card.saturday::before { background: linear-gradient(90deg, #c7ceea, #a3aadd); }
+        .super-day-card.sunday::before { background: linear-gradient(90deg, #ffd8e6, #ffb0c4); }
+        
+        .super-day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .super-day-name {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .super-day-date {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        .super-completion-rate {
+            background: linear-gradient(135deg, #4cc9f0, #4361ee);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .super-today-focus {
+            background: linear-gradient(135deg, #4cc9f0, #4361ee);
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .super-tasks-section h4, .super-events-section h4 {
+            margin-bottom: 12px;
+            font-size: 1rem;
+            color: #4361ee;
+        }
+        
+        .super-task-item, .super-event-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            margin-bottom: 8px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .super-task-priority, .super-event-type {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .super-priority-high { background-color: #ff6b6b; }
+        .super-priority-medium { background-color: #ffd166; }
+        .super-priority-low { background-color: #06d6a0; }
+        
+        .super-event-personal { background: linear-gradient(135deg, #c7ceea, #a3aadd); }
+        .super-event-work { background: linear-gradient(135deg, #a8e6cf, #80c9a9); }
+        .super-event-other { background: linear-gradient(135deg, #ffd3a5, #ffa87a); }
+        
+        .super-notes-section textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 80px;
+            font-size: 0.9rem;
         }
         
         /* Messages Section (Initially Hidden) */
@@ -883,7 +785,7 @@
     <!-- Header -->
     <header>
         <div class="container header-container">
-            <a href="index.html" class="logo">Ascended <span>Fitness</span> by Coach AP</a>
+            <a href="index.html" class="logo">Elite<span>Fit</span> Portal</a>
             <div class="user-info">
                 <span class="user-greeting">Welcome, John!</span>
                 <button class="logout-btn" onclick="logout()">Logout</button>
@@ -896,332 +798,414 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <ul class="nav-links">
-                <li><a href="#" class="active" onclick="showSection('dashboard', event)"><i class="fas fa-chart-line"></i> <span>Dashboard</span></a></li>
-                <li><a href="#" onclick="showSection('workouts', event)"><i class="fas fa-dumbbell"></i> <span>My Workouts</span></a></li>
-                <li><a href="#" onclick="showSection('nutrition', event)"><i class="fas fa-utensils"></i> <span>Nutrition Plan</span></a></li>
-                <li><a href="#" onclick="showSection('progress', event)"><i class="fas fa-chart-bar"></i> <span>Progress</span></a></li>
-                <li><a href="#" onclick="showSection('photos', event)"><i class="fas fa-camera"></i> <span>Progress Photos</span></a></li>
-                <li><a href="#" onclick="showSection('measurements', event)"><i class="fas fa-ruler-vertical"></i> <span>Measurements</span></a></li>
-                <li><a href="#" onclick="showSection('goals', event)"><i class="fas fa-bullseye"></i> <span>Goals</span></a></li>
-                <li><a href="#" onclick="showSection('messages', event)"><i class="fas fa-comments"></i> <span>Messages</span></a></li>
-                <li><a href="#" onclick="showSection('schedule', event)"><i class="fas fa-calendar-alt"></i> <span>Schedule</span></a></li>
-                <li><a href="#" onclick="showSection('google-calendar', event)"><i class="fas fa-google"></i> <span>Google Calendar</span></a></li>
-                <li><a href="#" onclick="showSection('whatsapp-calendar', event)"><i class="fab fa-whatsapp"></i> <span>WhatsApp Calendar</span></a></li>
-                <li><a href="#" onclick="showSection('calculator', event)"><i class="fas fa-calculator"></i> <span>Calorie Calculator</span></a></li>
-                <li><a href="#" onclick="showSection('resources', event)"><i class="fas fa-book"></i> <span>Resources</span></a></li>
-                <li><a href="#" onclick="showSection('settings', event)"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+                <li><a href="#" class="active" onclick="showSection('dashboard')"><i class="fas fa-chart-line"></i> <span>Dashboard</span></a></li>
+                <li><a href="#" onclick="showSection('workouts')"><i class="fas fa-dumbbell"></i> <span>My Workouts</span></a></li>
+                <li><a href="#" onclick="showSection('nutrition')"><i class="fas fa-utensils"></i> <span>Nutrition Plan</span></a></li>
+                <li><a href="#" onclick="showSection('progress')"><i class="fas fa-chart-bar"></i> <span>Progress</span></a></li>
+                <li><a href="#" onclick="showSection('photos')"><i class="fas fa-camera"></i> <span>Progress Photos</span></a></li>
+                <li><a href="#" onclick="showSection('measurements')"><i class="fas fa-ruler-vertical"></i> <span>Measurements</span></a></li>
+                <li><a href="#" onclick="showSection('goals')"><i class="fas fa-bullseye"></i> <span>Goals</span></a></li>
+                <li><a href="#" onclick="showSection('messages')"><i class="fas fa-comments"></i> <span>Messages</span></a></li>
+                <li><a href="#" onclick="showSection('schedule')"><i class="fas fa-calendar-alt"></i> <span>Schedule</span></a></li>
+                <li><a href="#" onclick="showSection('calculator')"><i class="fas fa-calculator"></i> <span>Calorie Calculator</span></a></li>
+                <li><a href="#" onclick="showSection('resources')"><i class="fas fa-book"></i> <span>Resources</span></a></li>
+                <li><a href="#" onclick="showSection('settings')"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
             </ul>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
             <div class="page-title">
-                <h1>Dashboard</h1>
+                <h1>Ascended Calendar</h1>
                 <div class="date-display" id="currentDate"></div>
             </div>
             
-            <!-- Stats Overview -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value">12</div>
-                    <div class="stat-label">Workouts This Week</div>
+            <!-- Calendar View Controls -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 15px; background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-outline" onclick="setCalendarView('daily')" style="background: #f8f9fa;">Daily</button>
+                    <button class="btn btn-outline" onclick="setCalendarView('weekly')" style="background: #4361ee; color: white;">Weekly</button>
+                    <button class="btn btn-outline" onclick="setCalendarView('monthly')" style="background: #f8f9fa;">Monthly</button>
+                    <button class="btn btn-outline" onclick="setCalendarView('yearly')" style="background: #f8f9fa;">Yearly</button>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value">87%</div>
-                    <div class="stat-label">Goal Completion</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">14 lbs</div>
-                    <div class="stat-label">Lost</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">5</div>
-                    <div class="stat-label">Day Streak</div>
-                </div>
-            </div>
-
-            <!-- Dashboard Cards -->
-            <div class="dashboard-grid">
-                <!-- Today's Workout -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title"><span class="card-icon">💪</span> Today's Workout</h3>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="font-size: 1.1rem; font-weight: bold; color: var(--primary-color);">
+                        <span id="workoutCount">12</span> Workouts This Week
                     </div>
-                    <p><strong>Upper Body Strength</strong></p>
-                    <p>Complete 3 rounds of:</p>
-                    <ul class="workout-list">
-                        <li class="workout-item">Push-ups: 3 sets of 12</li>
-                        <li class="workout-item">Pull-ups: 3 sets of 8</li>
-                        <li class="workout-item">Shoulder Press: 3 sets of 10</li>
-                        <li class="workout-item">Plank: 3 sets of 45 sec</li>
-                    </ul>
-                    <div style="margin-top: 1rem;">
-                        <button class="btn btn-success">Mark Complete</button>
-                        <button class="btn btn-outline">View Details</button>
+                    <div style="font-size: 1.1rem; font-weight: bold; color: var(--primary-color);">
+                        <span id="goalCompletion">87%</span> Goal Completion
                     </div>
-                </div>
-
-                <!-- Nutrition Tracking -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title"><span class="card-icon">🥗</span> Today's Nutrition</h3>
+                    <div style="font-size: 1.1rem; font-weight: bold; color: var(--primary-color);">
+                        <span id="weightLost">14 lbs</span> Lost
                     </div>
-                    <p><strong>Calories Consumed: 1,842/2,000</strong></p>
-                    <div class="nutrition-grid">
-                        <div class="macro-item">
-                            <div class="macro-value">142g</div>
-                            <div class="macro-label">Protein</div>
-                        </div>
-                        <div class="macro-item">
-                            <div class="macro-value">210g</div>
-                            <div class="macro-label">Carbs</div>
-                        </div>
-                        <div class="macro-item">
-                            <div class="macro-value">68g</div>
-                            <div class="macro-label">Fat</div>
-                        </div>
-                        <div class="macro-item">
-                            <div class="macro-value">8/10</div>
-                            <div class="macro-label">Water</div>
-                        </div>
+                    <div style="font-size: 1.1rem; font-weight: bold; color: var(--primary-color);">
+                        <span id="dayStreak">5</span> Day Streak
                     </div>
-                    <button class="btn btn-primary" style="margin-top: 1rem;">Log Meal</button>
-                </div>
-
-                <!-- Progress -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title"><span class="card-icon">📊</span> Goal Progress</h3>
-                    </div>
-                    <p>Lose 20 lbs in 10 weeks</p>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress-fill"></div>
-                        </div>
-                        <p>14 lbs remaining (75% to goal)</p>
-                    </div>
-                    <p><strong>Last Weigh-in:</strong> 2 days ago</p>
-                    <button class="btn btn-primary" style="margin-top: 1rem;">Update Weight</button>
-                </div>
-            </div>
-
-            <!-- Additional Sections -->
-            <div class="dashboard-grid">
-                <!-- Recent Activity -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title"><span class="card-icon">🔥</span> Recent Activity</h3>
-                    </div>
-                    <ul class="workout-list">
-                        <li class="workout-item">
-                            <div class="workout-header">
-                                <div class="workout-title">Cardio Blast</div>
-                                <div class="workout-meta">Today, 7:30 AM</div>
-                            </div>
-                            <div class="workout-actions">
-                                <button class="btn btn-outline">View</button>
-                            </div>
-                        </li>
-                        <li class="workout-item">
-                            <div class="workout-header">
-                                <div class="workout-title">Lower Body Strength</div>
-                                <div class="workout-meta">Yesterday, 6:00 PM</div>
-                            </div>
-                            <div class="workout-actions">
-                                <button class="btn btn-outline">View</button>
-                            </div>
-                        </li>
-                        <li class="workout-item">
-                            <div class="workout-header">
-                                <div class="workout-title">Core & Flexibility</div>
-                                <div class="workout-meta">Feb 1, 8:00 AM</div>
-                            </div>
-                            <div class="workout-actions">
-                                <button class="btn btn-outline">View</button>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Messages -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title"><span class="card-icon">💬</span> Messages</h3>
-                    </div>
-                    <div class="message-item">
-                        <div class="message-avatar">T</div>
-                        <div class="message-content">
-                            <div class="message-header">
-                                <div class="message-sender">Trainer</div>
-                                <div class="message-time">2 hours ago</div>
-                            </div>
-                            <div class="message-text">Great job on completing your last 3 workouts with 95% form accuracy. I've adjusted your next week's program to increase the challenge slightly.</div>
-                        </div>
-                    </div>
-                    <div class="message-item">
-                        <div class="message-avatar">T</div>
-                        <div class="message-content">
-                            <div class="message-header">
-                                <div class="message-sender">Trainer</div>
-                                <div class="message-time">Yesterday</div>
-                            </div>
-                            <div class="message-text">Don't forget your check-in appointment this Friday. Looking forward to seeing your progress photos!</div>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary" style="margin-top: 1rem;">View All Messages</button>
-                </div>
-
-                <!-- Upcoming Sessions -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title"><span class="card-icon">📅</span> Upcoming Sessions</h3>
-                    </div>
-                    <div class="session-item">
-                        <div class="session-icon">🏋️</div>
-                        <div class="session-info">
-                            <div class="session-title">Personal Training</div>
-                            <div class="session-time">Tomorrow, 6:00 PM</div>
-                        </div>
-                        <button class="btn btn-outline">Reschedule</button>
-                    </div>
-                    <div class="session-item">
-                        <div class="session-icon">🥗</div>
-                        <div class="session-info">
-                            <div class="session-title">Nutrition Consultation</div>
-                            <div class="session-time">Feb 6, 10:00 AM</div>
-                        </div>
-                        <button class="btn btn-outline">Reschedule</button>
-                    </div>
-                    <div class="session-item">
-                        <div class="session-icon">📏</div>
-                        <div class="session-info">
-                            <div class="session-title">Body Composition Scan</div>
-                            <div class="session-time">Feb 8, 2:00 PM</div>
-                        </div>
-                        <button class="btn btn-outline">Reschedule</button>
-                    </div>
-                    <button class="btn btn-primary" style="margin-top: 1rem;">View Schedule</button>
                 </div>
             </div>
 
             <!-- Calendar Section -->
             <div id="scheduleSection" class="calendar-section">
-                <div class="calendar-container">
-                    <div class="calendar-header">
-                        <h3>Super Calendar - Your Ultimate Scheduling Solution</h3>
-                        <div class="calendar-controls">
-                            <select id="themeSelector" class="theme-selector" onchange="changeTheme(this.value)">
-                                <option value="default">Default Theme</option>
-                                <option value="professional">Professional</option>
-                                <option value="fun">Fun & Playful</option>
-                                <option value="elegant">Elegant</option>
-                                <option value="sporty">Sporty</option>
-                            </select>
-                            <div class="calendar-nav">
-                                <button onclick="prevMonth()"><i class="fas fa-chevron-left"></i></button>
-                                <button onclick="today()">Today</button>
-                                <button onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
-                            </div>
+                <div class="super-calendar-container">
+                    <div class="super-calendar-header">
+                        <h3><i class="fas fa-calendar-alt"></i> ASCENDED CALENDAR</h3>
+                        <p>Ascended Calendar & Scheduling System</p>
+                        <div class="super-calendar-controls">
+                            <button class="super-control-btn"><i class="fas fa-arrow-left"></i> Previous Week</button>
+                            <button class="super-control-btn">Today <i class="fas fa-home"></i></button>
+                            <button class="super-control-btn">Next Week <i class="fas fa-arrow-right"></i></button>
+                            <button class="super-control-btn"><i class="fas fa-plus"></i> Add Event</button>
                         </div>
                     </div>
-                    <div id="calendarGrid" class="calendar-grid">
-                        <!-- Calendar will be generated by JavaScript -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Time Slot Modal -->
-            <div id="timeSlotModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeModal()">&times;</span>
-                    <h3 id="selectedDateTitle">Available Times</h3>
-                    <p>Select a time slot for your appointment:</p>
-                    <div id="timeSlotsContainer" class="time-slots">
-                        <!-- Time slots will be populated here -->
-                    </div>
-                    <div style="margin-top: 15px; text-align: center;">
-                        <button class="btn btn-primary" onclick="bookTimeSlot()">Book Selected Time</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Google Calendar Section -->
-            <div id="googleCalendarSection" class="google-calendar-section">
-                <div class="google-calendar-container">
-                    <div class="google-calendar-header">
-                        <h3>Google Calendar Integration</h3>
-                    </div>
-                    <div class="calendar-instructions">
-                        <p><strong>Instructions for Google Calendar Integration:</strong></p>
-                        <ol>
-                            <li>Go to <a href="https://calendar.google.com" target="_blank">Google Calendar</a></li>
-                            <li>Click on Settings (gear icon) → Settings</li>
-                            <li>Select "Integrate calendar" from the left menu</li>
-                            <li>Copy your calendar's embed code</li>
-                            <li>Paste it below or use the iframe method</li>
-                        </ol>
-                    </div>
-                    <p>Embed your Google Calendar using the public URL:</p>
-                    <input type="text" id="googleCalendarUrl" class="form-control" placeholder="Paste your Google Calendar public URL here" style="margin-bottom: 1rem;">
-                    <button class="btn btn-primary" onclick="embedGoogleCalendar()">Embed Calendar</button>
-                    <div id="googleCalendarIframeContainer">
-                        <!-- Google Calendar iframe will be inserted here -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- WhatsApp Calendar Section -->
-            <div id="whatsappCalendarSection" class="whatsapp-calendar-section">
-                <div class="whatsapp-calendar-container">
-                    <div class="whatsapp-calendar-header">
-                        <h3>WhatsApp Calendar Integration</h3>
-                    </div>
-                    <div class="whatsapp-calendar-info">
-                        <p><strong>Integrated Scheduling via WhatsApp</strong></p>
-                        <p>Connect your calendar with WhatsApp to receive automatic appointment confirmations, reminders, and scheduling updates.</p>
-                    </div>
                     
-                    <div class="whatsapp-calendar-features">
-                        <h4>Features:</h4>
-                        <ul>
-                            <li>Automatic appointment confirmations via WhatsApp</li>
-                            <li>Smart reminder notifications before appointments</li>
-                            <li>Easy rescheduling through WhatsApp messages</li>
-                            <li>Availability updates in real-time</li>
-                            <li>Integration with your Google Calendar</li>
-                        </ul>
-                    </div>
-                    
-                    <div style="margin: 1.5rem 0;">
-                        <h4>Schedule Appointment via WhatsApp:</h4>
-                        <p>Click the button below to contact your trainer directly through WhatsApp to schedule an appointment:</p>
-                        <a href="https://wa.me/13057840724" target="_blank" class="whatsapp-button">
-                            <i class="fab fa-whatsapp"></i> Message Your Trainer
-                        </a>
-                    </div>
-                    
-                    <div style="margin: 1.5rem 0;">
-                        <h4>Book Appointment:</h4>
-                        <p>Alternatively, you can request a booking by filling out this form:</p>
-                        <form id="bookingForm" style="margin-top: 1rem;">
-                            <div class="form-group">
-                                <label for="appointmentDate">Preferred Date</label>
-                                <input type="date" id="appointmentDate" class="form-control" required>
+                    <div class="super-calendar-body">
+                        <div class="super-sidebar">
+                            <h3 class="super-section-title"><i class="fas fa-calendar-day"></i> Monthly Overview</h3>
+                            <div class="current-month">
+                                February 2026
+                                <div class="month-navigation">
+                                    <button class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+                                    <button class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="appointmentTime">Preferred Time</label>
-                                <input type="time" id="appointmentTime" class="form-control" required>
+                            <div class="super-month-grid">
+                                <div class="super-month-day header">Sun</div>
+                                <div class="super-month-day header">Mon</div>
+                                <div class="super-month-day header">Tue</div>
+                                <div class="super-month-day header">Wed</div>
+                                <div class="super-month-day header">Thu</div>
+                                <div class="super-month-day header">Fri</div>
+                                <div class="super-month-day header">Sat</div>
+                                
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day">1</div>
+                                <div class="super-month-day">2</div>
+                                
+                                <div class="super-month-day">3</div>
+                                <div class="super-month-day">4</div>
+                                <div class="super-month-day today">5</div>
+                                <div class="super-month-day">6</div>
+                                <div class="super-month-day">7</div>
+                                <div class="super-month-day">8</div>
+                                <div class="super-month-day">9</div>
+                                
+                                <div class="super-month-day">10</div>
+                                <div class="super-month-day">11</div>
+                                <div class="super-month-day">12</div>
+                                <div class="super-month-day">13</div>
+                                <div class="super-month-day">14</div>
+                                <div class="super-month-day">15</div>
+                                <div class="super-month-day">16</div>
+                                
+                                <div class="super-month-day">17</div>
+                                <div class="super-month-day">18</div>
+                                <div class="super-month-day">19</div>
+                                <div class="super-month-day">20</div>
+                                <div class="super-month-day">21</div>
+                                <div class="super-month-day">22</div>
+                                <div class="super-month-day">23</div>
+                                
+                                <div class="super-month-day">24</div>
+                                <div class="super-month-day">25</div>
+                                <div class="super-month-day">26</div>
+                                <div class="super-month-day">27</div>
+                                <div class="super-month-day">28</div>
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day"></div>
                             </div>
-                            <div class="form-group">
-                                <label for="appointmentType">Appointment Type</label>
-                                <input type="hidden" id="appointmentType" value="personal-training">
+                            
+                            <h3 class="super-section-title"><i class="fas fa-chart-line"></i> Weekly Stats</h3>
+                            <div class="stat-card" style="padding: 12px; margin-bottom: 10px;">
+                                <div class="stat-title">Tasks Completed</div>
+                                <div class="stat-value">24/32</div>
                             </div>
-                            <div class="form-group">
-                                <label for="appointmentNotes">Notes</label>
-                                <textarea id="appointmentNotes" class="form-control" rows="3" placeholder="Any special requests or notes..."></textarea>
+                            <div class="stat-card" style="padding: 12px; margin-bottom: 10px;">
+                                <div class="stat-title">Productivity Score</div>
+                                <div class="stat-value">87%</div>
                             </div>
-                            <button type="button" class="btn btn-primary" onclick="sendBookingRequest()">Send Booking Request</button>
-                        </form>
+                            
+                            <h3 class="super-section-title"><i class="fas fa-check-circle"></i> Habit Tracker</h3>
+                            <div class="habit-item" style="display: flex; align-items: center; margin-bottom: 10px; padding: 8px; background-color: #f8f9fa; border-radius: 10px;">
+                                <div class="habit-icon" style="width: 25px; height: 25px; background: linear-gradient(135deg, #4361ee, #3a0ca3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px; color: white; font-size: 0.8rem;">💧</div>
+                                <div class="habit-info" style="flex: 1; font-size: 0.9rem;">
+                                    <div class="habit-name">Drink Water</div>
+                                </div>
+                                <div class="habit-checkbox" style="width: 16px; height: 16px; border: 2px solid #ddd; border-radius: 50%; cursor: pointer;"></div>
+                            </div>
+                            <div class="habit-item" style="display: flex; align-items: center; margin-bottom: 10px; padding: 8px; background-color: #f8f9fa; border-radius: 10px;">
+                                <div class="habit-icon" style="width: 25px; height: 25px; background: linear-gradient(135deg, #4361ee, #3a0ca3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px; color: white; font-size: 0.8rem;">🏃</div>
+                                <div class="habit-info" style="flex: 1; font-size: 0.9rem;">
+                                    <div class="habit-name">Exercise</div>
+                                </div>
+                                <div class="habit-checkbox" style="width: 16px; height: 16px; border: 2px solid #ddd; border-radius: 50%; cursor: pointer;"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="super-days-grid">
+                            <!-- Monday -->
+                            <div class="super-day-card monday">
+                                <div class="super-day-header">
+                                    <div>
+                                        <div class="super-day-name">Monday</div>
+                                        <div class="super-day-date">Feb 2</div>
+                                    </div>
+                                    <div class="super-completion-rate">85%</div>
+                                </div>
+                                <div class="super-today-focus">Complete project proposal</div>
+                                
+                                <div class="super-tasks-section">
+                                    <h4><i class="fas fa-tasks"></i> Tasks</h4>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-high"></div>
+                                        <span>Finish client presentation</span>
+                                    </div>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-medium"></div>
+                                        <span>Team meeting at 2 PM</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-events-section">
+                                    <h4><i class="fas fa-calendar"></i> Events</h4>
+                                    <div class="event-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-event-type super-event-work"></div>
+                                        <span>Client Call - 10:00 AM</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-notes-section" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                                    <textarea placeholder="Add notes for Monday...">Need to prepare materials for client meeting</textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- Tuesday -->
+                            <div class="super-day-card tuesday">
+                                <div class="super-day-header">
+                                    <div>
+                                        <div class="super-day-name">Tuesday</div>
+                                        <div class="super-day-date">Feb 3</div>
+                                    </div>
+                                    <div class="super-completion-rate">70%</div>
+                                </div>
+                                <div class="super-today-focus">Prepare for conference call</div>
+                                
+                                <div class="super-tasks-section">
+                                    <h4><i class="fas fa-tasks"></i> Tasks</h4>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-high"></div>
+                                        <span>Conference call at 10 AM</span>
+                                    </div>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-medium"></div>
+                                        <span>Review quarterly reports</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-events-section">
+                                    <h4><i class="fas fa-calendar"></i> Events</h4>
+                                    <div class="event-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-event-type super-event-work"></div>
+                                        <span>Team Sync - 11:00 AM</span>
+                                    </div>
+                                    <div class="event-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-event-type super-event-personal"></div>
+                                        <span>Dentist Appointment - 4:00 PM</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-notes-section" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                                    <textarea placeholder="Add notes for Tuesday...">Remember to call dentist to confirm appointment</textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- Wednesday -->
+                            <div class="super-day-card wednesday">
+                                <div class="super-day-header">
+                                    <div>
+                                        <div class="super-day-name">Wednesday</div>
+                                        <div class="super-day-date">Feb 4</div>
+                                    </div>
+                                    <div class="super-completion-rate">90%</div>
+                                </div>
+                                <div class="super-today-focus">Submit project milestone</div>
+                                
+                                <div class="super-tasks-section">
+                                    <h4><i class="fas fa-tasks"></i> Tasks</h4>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-high"></div>
+                                        <span>Submit project milestone</span>
+                                    </div>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-medium"></div>
+                                        <span>Lunch with team</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-events-section">
+                                    <h4><i class="fas fa-calendar"></i> Events</h4>
+                                    <div class="event-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-event-type super-event-work"></div>
+                                        <span>Milestone Review - 2:00 PM</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-notes-section" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                                    <textarea placeholder="Add notes for Wednesday...">Prepare presentation for milestone review</textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- Thursday -->
+                            <div class="super-day-card thursday">
+                                <div class="super-day-header">
+                                    <div>
+                                        <div class="super-day-name">Thursday</div>
+                                        <div class="super-day-date">Feb 5</div>
+                                    </div>
+                                    <div class="super-completion-rate">60%</div>
+                                </div>
+                                <div class="super-today-focus">Review feedback and iterate</div>
+                                
+                                <div class="super-tasks-section">
+                                    <h4><i class="fas fa-tasks"></i> Tasks</h4>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-high"></div>
+                                        <span>Review feedback from stakeholders</span>
+                                    </div>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-medium"></div>
+                                        <span>Plan weekend activities</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-events-section">
+                                    <h4><i class="fas fa-calendar"></i> Events</h4>
+                                    <div class="event-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-event-type super-event-work"></div>
+                                        <span>Feedback Session - 9:00 AM</span>
+                                    </div>
+                                    <div class="event-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-event-type super-event-other"></div>
+                                        <span>Friend's Birthday - All Day</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-notes-section" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                                    <textarea placeholder="Add notes for Thursday...">Follow up on feedback received today</textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- Friday -->
+                            <div class="super-day-card friday">
+                                <div class="super-day-header">
+                                    <div>
+                                        <div class="super-day-name">Friday</div>
+                                        <div class="super-day-date">Feb 6</div>
+                                    </div>
+                                    <div class="super-completion-rate">75%</div>
+                                </div>
+                                <div class="super-today-focus">Wrap up week and plan next</div>
+                                
+                                <div class="super-tasks-section">
+                                    <h4><i class="fas fa-tasks"></i> Tasks</h4>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-high"></div>
+                                        <span>Weekly report submission</span>
+                                    </div>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-medium"></div>
+                                        <span>Team retrospective</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-events-section">
+                                    <h4><i class="fas fa-calendar"></i> Events</h4>
+                                    <div class="event-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-event-type super-event-work"></div>
+                                        <span>Retrospective - 3:00 PM</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-notes-section" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                                    <textarea placeholder="Add notes for Friday...">Prepare for next week's priorities</textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- Saturday -->
+                            <div class="super-day-card saturday">
+                                <div class="super-day-header">
+                                    <div>
+                                        <div class="super-day-name">Saturday</div>
+                                        <div class="super-day-date">Feb 7</div>
+                                    </div>
+                                    <div class="super-completion-rate">45%</div>
+                                </div>
+                                <div class="super-today-focus">Relax and recharge</div>
+                                
+                                <div class="super-tasks-section">
+                                    <h4><i class="fas fa-tasks"></i> Tasks</h4>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-low"></div>
+                                        <span>Grocery shopping</span>
+                                    </div>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-low"></div>
+                                        <span>Movie night</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-events-section">
+                                    <h4><i class="fas fa-calendar"></i> Events</h4>
+                                    <div class="event-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-event-type super-event-personal"></div>
+                                        <span>Family Dinner - 7:00 PM</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-notes-section" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                                    <textarea placeholder="Add notes for Saturday...">Relax and enjoy the weekend</textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- Sunday -->
+                            <div class="super-day-card sunday">
+                                <div class="super-day-header">
+                                    <div>
+                                        <div class="super-day-name">Sunday</div>
+                                        <div class="super-day-date">Feb 8</div>
+                                    </div>
+                                    <div class="super-completion-rate">30%</div>
+                                </div>
+                                <div class="super-today-focus">Prepare for upcoming week</div>
+                                
+                                <div class="super-tasks-section">
+                                    <h4><i class="fas fa-tasks"></i> Tasks</h4>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-medium"></div>
+                                        <span>Meal prep for week</span>
+                                    </div>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-low"></div>
+                                        <span>Read new book</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-events-section">
+                                    <h4><i class="fas fa-calendar"></i> Events</h4>
+                                    <div class="event-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-event-type super-event-personal"></div>
+                                        <span>Self-care Day - All Day</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-notes-section" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                                    <textarea placeholder="Add notes for Sunday...">Prepare mentally for the new week ahead</textarea>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1294,88 +1278,6 @@
         let currentDate = new Date();
         let currentMonth = currentDate.getMonth();
         let currentYear = currentDate.getFullYear();
-        let selectedDate = null;
-        let currentTheme = 'default';
-
-        // Availability data structure - in a real app this would come from a backend
-        let availabilityData = {};
-
-        // Initialize availability data with some sample data
-        initializeSampleAvailability();
-
-        function initializeSampleAvailability() {
-            // Add some sample availability for the next few days
-            const today = new Date();
-            for (let i = 0; i < 30; i++) {
-                const date = new Date();
-                date.setDate(today.getDate() + i);
-                
-                const dateStr = formatDate(date);
-                availabilityData[dateStr] = {
-                    status: Math.random() > 0.3 ? 'available' : 'busy', // Random availability
-                    timeSlots: generateTimeSlots(date)
-                };
-            }
-        }
-
-        function generateTimeSlots(date) {
-            // Generate time slots for a given date
-            // This is a simplified version - in reality, this would depend on day of week, etc.
-            const slots = [];
-            const dayOfWeek = date.getDay();
-            
-            // Define different schedules based on day of week
-            if (dayOfWeek === 0 || dayOfWeek === 6) { // Weekend
-                // Limited weekend hours
-                for (let hour = 9; hour <= 12; hour++) {
-                    slots.push({
-                        time: `${hour}:00`,
-                        available: Math.random() > 0.4
-                    });
-                }
-            } else { // Weekday
-                // More options during weekdays
-                for (let hour = 8; hour <= 18; hour++) {
-                    // Skip lunch hour
-                    if (hour !== 12) {
-                        slots.push({
-                            time: `${hour}:00`,
-                            available: Math.random() > 0.3
-                        });
-                    }
-                }
-            }
-            
-            return slots;
-        }
-
-        function formatDate(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-
-        // Theme changing functionality
-        function changeTheme(theme) {
-            const body = document.body;
-            
-            // Remove all theme classes
-            body.classList.remove('theme-professional', 'theme-fun', 'theme-elegant', 'theme-sporty');
-            
-            // Apply new theme if not default
-            if (theme !== 'default') {
-                body.classList.add(`theme-${theme}`);
-            }
-            
-            // Store selected theme
-            currentTheme = theme;
-            
-            // Regenerate calendar to apply theme changes to the calendar grid
-            if (document.getElementById('scheduleSection').style.display !== 'none') {
-                generateCalendar(currentMonth, currentYear);
-            }
-        }
 
         // Logout function
         function logout() {
@@ -1385,179 +1287,57 @@
             }
         }
 
-        // Show selected section - COMPLETELY REVISED VERSION WITH ENHANCED VISIBILITY
-        function showSection(section, evt) {
-            console.log("showSection called with:", section); // Debug log
+        // Show selected section
+        function showSection(section) {
+            // Hide all sections
+            document.getElementById('scheduleSection').style.display = 'none';
+            document.getElementById('messagesSection').style.display = 'none';
+            document.getElementById('calculatorSection').style.display = 'none';
             
-            // Prevent default behavior and stop propagation
-            if (evt) {
-                evt.preventDefault();
-                evt.stopPropagation();
-            }
-            
-            // Hide all sections first
-            const allSections = document.querySelectorAll('.calendar-section, .google-calendar-section, .whatsapp-calendar-section, .messages-section, .calculator-section, .dashboard-grid');
-            allSections.forEach(sec => {
-                if (sec) {
-                    sec.style.display = 'none';
-                    sec.classList.remove('visible');
-                }
-            });
-            
-            // Show dashboard by default
+            // Show dashboard if not a special section
+            document.querySelector('.stats-grid').parentElement.style.display = 'block';
             document.querySelectorAll('.dashboard-grid').forEach(grid => {
                 grid.style.display = 'grid';
             });
             
             // Update active nav link
-            const navLinks = document.querySelectorAll('.nav-links a');
-            navLinks.forEach(link => {
+            document.querySelectorAll('.nav-links a').forEach(link => {
                 link.classList.remove('active');
             });
-            
-            // Find the clicked element and mark it as active
-            if (evt && evt.target) {
-                let target = evt.target;
-                // If the click was on the icon or span inside the link, get the parent link
-                while (target && target.tagName !== 'A') {
-                    target = target.parentElement;
-                    if (!target) break;
-                }
-                if (target) {
-                    target.classList.add('active');
-                }
-            }
+            event.target.closest('a').classList.add('active');
 
-            // Show selected section with enhanced visibility
-            setTimeout(() => {
-                switch(section) {
-                    case 'schedule':
-                        console.log("Showing schedule section");
-                        document.querySelectorAll('.dashboard-grid').forEach(grid => {
-                            grid.style.display = 'none';
-                        });
-                        
-                        const scheduleSection = document.getElementById('scheduleSection');
-                        if (scheduleSection) {
-                            scheduleSection.style.display = 'block';
-                            scheduleSection.classList.add('visible');
-                            
-                            // Force layout recalculation
-                            scheduleSection.offsetHeight;
-                            
-                            // Smooth scroll to section
-                            scheduleSection.scrollIntoView({ 
-                                behavior: 'smooth', 
-                                block: 'start',
-                                inline: 'nearest'
-                            });
-                            
-                            // Additional forced visibility for calendar section
-                            scheduleSection.style.visibility = 'visible';
-                            scheduleSection.style.opacity = '1';
-                            
-                            // Generate calendar after ensuring visibility
-                            setTimeout(() => {
-                                generateCalendar(currentMonth, currentYear);
-                                console.log("Calendar generated");
-                            }, 100);
-                        }
-                        break;
-                        
-                    case 'google-calendar':
-                        console.log("Showing Google Calendar section");
-                        document.querySelectorAll('.dashboard-grid').forEach(grid => {
-                            grid.style.display = 'none';
-                        });
-                        
-                        const googleCalendarSection = document.getElementById('googleCalendarSection');
-                        if (googleCalendarSection) {
-                            googleCalendarSection.style.display = 'block';
-                            googleCalendarSection.classList.add('visible');
-                            
-                            // Force layout recalculation
-                            googleCalendarSection.offsetHeight;
-                            
-                            // Smooth scroll to section
-                            googleCalendarSection.scrollIntoView({ 
-                                behavior: 'smooth', 
-                                block: 'start',
-                                inline: 'nearest'
-                            });
-                            
-                            // Additional forced visibility for Google calendar section
-                            googleCalendarSection.style.visibility = 'visible';
-                            googleCalendarSection.style.opacity = '1';
-                        }
-                        break;
-                        
-                    case 'whatsapp-calendar':
-                        console.log("Showing WhatsApp Calendar section");
-                        document.querySelectorAll('.dashboard-grid').forEach(grid => {
-                            grid.style.display = 'none';
-                        });
-                        
-                        const whatsappCalendarSection = document.getElementById('whatsappCalendarSection');
-                        if (whatsappCalendarSection) {
-                            whatsappCalendarSection.style.display = 'block';
-                            whatsappCalendarSection.classList.add('visible');
-                            
-                            // Force layout recalculation
-                            whatsappCalendarSection.offsetHeight;
-                            
-                            // Smooth scroll to section
-                            whatsappCalendarSection.scrollIntoView({ 
-                                behavior: 'smooth', 
-                                block: 'start',
-                                inline: 'nearest'
-                            });
-                            
-                            // Additional forced visibility for WhatsApp calendar section
-                            whatsappCalendarSection.style.visibility = 'visible';
-                            whatsappCalendarSection.style.opacity = '1';
-                        }
-                        break;
-                        
-                    case 'messages':
-                        document.querySelectorAll('.dashboard-grid').forEach(grid => {
-                            grid.style.display = 'none';
-                        });
-                        
-                        const messagesSection = document.getElementById('messagesSection');
-                        if (messagesSection) {
-                            messagesSection.style.display = 'block';
-                        }
-                        break;
-                        
-                    case 'calculator':
-                        document.querySelectorAll('.dashboard-grid').forEach(grid => {
-                            grid.style.display = 'none';
-                        });
-                        
-                        const calculatorSection = document.getElementById('calculatorSection');
-                        if (calculatorSection) {
-                            calculatorSection.style.display = 'block';
-                        }
-                        break;
-                        
-                    case 'dashboard':
-                    default:
-                        document.querySelectorAll('.dashboard-grid').forEach(grid => {
-                            grid.style.display = 'grid';
-                        });
-                        break;
-                }
-            }, 50); // Small delay to ensure proper rendering
+            // Show selected section
+            if (section === 'schedule') {
+                document.querySelector('.stats-grid').parentElement.style.display = 'none';
+                document.querySelectorAll('.dashboard-grid').forEach(grid => {
+                    grid.style.display = 'none';
+                });
+                document.getElementById('scheduleSection').style.display = 'block';
+                // Set default to weekly view
+                setCalendarView('weekly');
+            } else if (section === 'messages') {
+                document.querySelector('.stats-grid').parentElement.style.display = 'none';
+                document.querySelectorAll('.dashboard-grid').forEach(grid => {
+                    grid.style.display = 'none';
+                });
+                document.getElementById('messagesSection').style.display = 'block';
+            } else if (section === 'calculator') {
+                document.querySelector('.stats-grid').parentElement.style.display = 'none';
+                document.querySelectorAll('.dashboard-grid').forEach(grid => {
+                    grid.style.display = 'none';
+                });
+                document.getElementById('calculatorSection').style.display = 'block';
+            } else if (section === 'dashboard') {
+                document.querySelector('.stats-grid').parentElement.style.display = 'block';
+                document.querySelectorAll('.dashboard-grid').forEach(grid => {
+                    grid.style.display = 'grid';
+                });
+            }
         }
 
-        // Enhanced calendar functions with availability status
+        // Calendar functions
         function generateCalendar(month, year) {
             const calendarGrid = document.getElementById('calendarGrid');
-            if (!calendarGrid) {
-                console.error("calendarGrid element not found!");
-                return;
-            }
-            
             calendarGrid.innerHTML = '';
 
             // Add day headers
@@ -1584,34 +1364,12 @@
             for (let day = 1; day <= daysInMonth; day++) {
                 const dayCell = document.createElement('div');
                 dayCell.className = 'calendar-day';
-                
-                // Highlight today
-                const today = new Date();
-                if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
-                    dayCell.style.backgroundColor = '#e3f2fd';
-                    dayCell.style.border = '2px solid #2196f3';
-                }
-                
-                // Set up click handler to show availability
-                const date = new Date(year, month, day);
-                const dateStr = formatDate(date);
-                
-                dayCell.onclick = function() {
-                    selectDay(day, month, year, dateStr);
-                };
+                dayCell.onclick = () => selectDay(day, month, year);
                 
                 const dayNumber = document.createElement('div');
                 dayNumber.className = 'calendar-day-number';
                 dayNumber.textContent = day;
                 dayCell.appendChild(dayNumber);
-
-                // Add availability status indicator
-                if (availabilityData[dateStr]) {
-                    const statusDiv = document.createElement('div');
-                    statusDiv.className = `availability-status ${availabilityData[dateStr].status}`;
-                    statusDiv.textContent = availabilityData[dateStr].status.charAt(0).toUpperCase() + availabilityData[dateStr].status.slice(1);
-                    dayCell.appendChild(statusDiv);
-                }
 
                 // Add sample events for demonstration
                 if (day % 7 === 0) {
@@ -1635,90 +1393,9 @@
             }
         }
 
-        function selectDay(day, month, year, dateStr) {
-            // Store selected date
-            selectedDate = new Date(year, month, day);
-            
-            // Update modal title
-            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const formattedDate = selectedDate.toLocaleDateString('en-US', dateOptions);
-            document.getElementById('selectedDateTitle').textContent = `Available Times for ${formattedDate}`;
-            
-            // Populate time slots
-            populateTimeSlots(dateStr);
-            
-            // Show modal
-            document.getElementById('timeSlotModal').style.display = 'block';
+        function selectDay(day, month, year) {
+            alert(`Selected date: ${month + 1}/${day}/${year}\nYou can add events like workout of the day, body stats, meals, etc.`);
         }
-
-        function populateTimeSlots(dateStr) {
-            const container = document.getElementById('timeSlotsContainer');
-            container.innerHTML = ''; // Clear existing slots
-            
-            if (!availabilityData[dateStr]) {
-                // If no data for this date, generate some
-                availabilityData[dateStr] = {
-                    status: 'available',
-                    timeSlots: generateTimeSlots(new Date(dateStr))
-                };
-            }
-            
-            const timeSlots = availabilityData[dateStr].timeSlots;
-            
-            timeSlots.forEach(slot => {
-                const slotElement = document.createElement('div');
-                slotElement.className = `time-slot ${slot.available ? 'available' : 'busy'}`;
-                slotElement.textContent = slot.time;
-                
-                if (slot.available) {
-                    slotElement.onclick = function() {
-                        // Select this time slot
-                        document.querySelectorAll('.time-slot').forEach(el => {
-                            el.style.border = 'none';
-                            el.style.boxShadow = 'none';
-                        });
-                        this.style.border = '2px solid var(--primary-color)';
-                        this.style.boxShadow = '0 0 5px rgba(0,0,0,0.3)';
-                        
-                        // Store selected time
-                        selectedTime = slot.time;
-                    };
-                } else {
-                    slotElement.style.cursor = 'not-allowed';
-                }
-                
-                container.appendChild(slotElement);
-            });
-        }
-
-        function closeModal() {
-            document.getElementById('timeSlotModal').style.display = 'none';
-        }
-
-        function bookTimeSlot() {
-            if (!selectedDate || !selectedTime) {
-                alert('Please select a date and time first.');
-                return;
-            }
-            
-            // In a real application, this would make an API call to book the slot
-            // For now, we'll simulate the booking
-            
-            const dateStr = formatDate(selectedDate);
-            const timeStr = selectedTime;
-            
-            alert(`Booking confirmed for ${dateStr} at ${timeStr}!\n\nA confirmation will be sent to your email and WhatsApp.`);
-            
-            // Close modal and reset selections
-            closeModal();
-            selectedDate = null;
-            selectedTime = null;
-            
-            // Refresh calendar to show updated availability
-            generateCalendar(currentMonth, currentYear);
-        }
-
-        let selectedTime = null;
 
         function prevMonth() {
             currentMonth--;
@@ -1743,89 +1420,6 @@
             currentMonth = currentDate.getMonth();
             currentYear = currentDate.getFullYear();
             generateCalendar(currentMonth, currentYear);
-        }
-
-        // Google Calendar embedding function
-        function embedGoogleCalendar() {
-            const urlInput = document.getElementById('googleCalendarUrl');
-            const url = urlInput.value.trim();
-            
-            if (!url) {
-                alert('Please enter a Google Calendar URL');
-                return;
-            }
-            
-            // Validate if it's a Google Calendar URL
-            if (!url.includes('calendar.google.com') && !url.includes('google.com/calendar')) {
-                alert('Please enter a valid Google Calendar URL');
-                return;
-            }
-            
-            // Extract calendar ID from URL if it's a regular Google Calendar link
-            let calendarUrl = url;
-            
-            // If it's a public embed URL, use it directly
-            if (url.includes('embed?src=')) {
-                calendarUrl = url;
-            } else if (url.includes('calendar.google.com')) {
-                // Convert regular calendar URL to embed URL
-                const regex = /calendar\/(.*)\/(.*)\?cid=(.*)/;
-                if (regex.test(url)) {
-                    // If it's already an embed URL
-                    calendarUrl = url;
-                } else {
-                    // Attempt to convert to embed format
-                    const embedMatch = url.match(/calendar.google.com\/calendar\/u\/\d+\/embedded\?src=([a-zA-Z0-9%_.-]+)/);
-                    if (embedMatch) {
-                        calendarUrl = `https://calendar.google.com/calendar/embed?src=${embedMatch[1]}`;
-                    } else {
-                        // If we can't parse it, try to use the original URL
-                        calendarUrl = url;
-                    }
-                }
-            }
-            
-            const iframeContainer = document.getElementById('googleCalendarIframeContainer');
-            iframeContainer.innerHTML = `
-                <iframe src="${calendarUrl}" 
-                        class="google-calendar-iframe"
-                        frameborder="0" 
-                        scrolling="no">
-                </iframe>
-            `;
-        }
-
-        // WhatsApp booking request function
-        function sendBookingRequest() {
-            const date = document.getElementById('appointmentDate').value;
-            const time = document.getElementById('appointmentTime').value;
-            const notes = document.getElementById('appointmentNotes').value;
-            
-            if (!date || !time) {
-                alert('Please select both date and time for your appointment.');
-                return;
-            }
-            
-            // Format the appointment details into a message
-            const appointmentDetails = {
-                date: new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
-                time: time,
-                type: 'Personal Training Session',
-                notes: notes || 'No additional notes'
-            };
-            
-            // Create a WhatsApp message with the appointment details
-            const whatsappMessage = encodeURIComponent(
-                `Hello! I'd like to book an appointment:\n\n` +
-                `Date: ${appointmentDetails.date}\n` +
-                `Time: ${appointmentDetails.time}\n` +
-                `Type: ${appointmentDetails.type}\n` +
-                `Notes: ${appointmentDetails.notes}\n\n` +
-                `Please confirm my booking. Thanks!`
-            );
-            
-            // Open WhatsApp with the pre-filled message
-            window.open(`https://wa.me/13057840724?text=${whatsappMessage}`, '_blank');
         }
 
         // Calorie calculator
@@ -1865,31 +1459,877 @@
             `;
         }
 
-        // Close modal when clicking outside of it
-        window.onclick = function(event) {
-            const modal = document.getElementById('timeSlotModal');
-            if (event.target === modal) {
-                closeModal();
+        // Initialize calendar
+        generateCalendar(currentMonth, currentYear);
+        
+        // Calendar view functions
+        function setCalendarView(view) {
+            // Update button states
+            document.querySelectorAll('[onclick*="setCalendarView"]').forEach(btn => {
+                if (btn.textContent.toLowerCase().includes(view)) {
+                    btn.style.background = '#4361ee';
+                    btn.style.color = 'white';
+                } else {
+                    btn.style.background = '#f8f9fa';
+                    btn.style.color = 'inherit';
+                }
+            });
+            
+            // Update calendar display based on view
+            switch(view) {
+                case 'daily':
+                    document.querySelector('.super-calendar-body').innerHTML = `
+                        <div class="super-sidebar">
+                            <h3 class="super-section-title"><i class="fas fa-calendar-day"></i> Daily Overview</h3>
+                            <div style="text-align:center; padding:20px; background:white; border-radius:10px; margin-bottom:20px;">
+                                <div style="font-size:2rem; font-weight:bold; color:#4361ee;">${new Date().getDate()}</div>
+                                <div style="font-size:1.1rem; margin-top:5px;">${new Date().toLocaleDateString('en-US', {weekday: 'long'})}</div>
+                                <div style="font-size:1rem; color:#777;">${new Date().toLocaleDateString('en-US', {month: 'long', year: 'numeric'})}</div>
+                            </div>
+                            <h3 class="super-section-title"><i class="fas fa-check-circle"></i> Today's Habits</h3>
+                            <div class="habit-item" style="display: flex; align-items: center; margin-bottom: 10px; padding: 8px; background-color: #f8f9fa; border-radius: 10px;">
+                                <div class="habit-icon" style="width: 25px; height: 25px; background: linear-gradient(135deg, #4361ee, #3a0ca3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px; color: white; font-size: 0.8rem;">💧</div>
+                                <div class="habit-info" style="flex: 1; font-size: 0.9rem;">
+                                    <div class="habit-name">Drink Water</div>
+                                </div>
+                                <div class="habit-checkbox" style="width: 16px; height: 16px; border: 2px solid #ddd; border-radius: 50%; cursor: pointer;"></div>
+                            </div>
+                            <div class="habit-item" style="display: flex; align-items: center; margin-bottom: 10px; padding: 8px; background-color: #f8f9fa; border-radius: 10px;">
+                                <div class="habit-icon" style="width: 25px; height: 25px; background: linear-gradient(135deg, #4361ee, #3a0ca3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px; color: white; font-size: 0.8rem;">🏃</div>
+                                <div class="habit-info" style="flex: 1; font-size: 0.9rem;">
+                                    <div class="habit-name">Exercise</div>
+                                </div>
+                                <div class="habit-checkbox" style="width: 16px; height: 16px; border: 2px solid #ddd; border-radius: 50%; cursor: pointer;"></div>
+                            </div>
+                        </div>
+                        <div class="super-day-card" style="height: 100%;">
+                            <div class="super-day-header">
+                                <div>
+                                    <div class="super-day-name">${new Date().toLocaleDateString('en-US', {weekday: 'long'})}</div>
+                                    <div class="super-day-date">${new Date().toLocaleDateString('en-US', {month: 'short', day: 'numeric'})}</div>
+                                </div>
+                                <div class="super-completion-rate">0%</div>
+                            </div>
+                            <div class="super-today-focus">Focus for today</div>
+                            
+                            <div class="super-tasks-section">
+                                <h4><i class="fas fa-tasks"></i> Today's Tasks</h4>
+                                <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                    <div class="super-task-priority super-priority-high"></div>
+                                    <span>Important task for today</span>
+                                </div>
+                                <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                    <div class="super-task-priority super-priority-medium"></div>
+                                    <span>Medium priority task</span>
+                                </div>
+                            </div>
+                            
+                            <div class="super-events-section">
+                                <h4><i class="fas fa-calendar"></i> Today's Events</h4>
+                                <div class="event-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                    <div class="super-event-type super-event-work"></div>
+                                    <span>Event scheduled for today</span>
+                                </div>
+                            </div>
+                            
+                            <div class="super-notes-section" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; height: calc(100% - 300px);">
+                                <textarea placeholder="Add notes for today..." style="width: 100%; height: 100%; resize: none;">Today's notes and observations...</textarea>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'weekly':
+                    // Reload the standard weekly view
+                    // Reload the weekly view content instead of refreshing the whole page
+                    document.querySelector('.super-calendar-body').innerHTML = `
+                        <div class="super-sidebar">
+                            <h3 class="super-section-title"><i class="fas fa-calendar-day"></i> Monthly Overview</h3>
+                            <div class="current-month">
+                                February 2026
+                                <div class="month-navigation">
+                                    <button class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+                                    <button class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+                                </div>
+                            </div>
+                            <div class="super-month-grid">
+                                <div class="super-month-day header">Sun</div>
+                                <div class="super-month-day header">Mon</div>
+                                <div class="super-month-day header">Tue</div>
+                                <div class="super-month-day header">Wed</div>
+                                <div class="super-month-day header">Thu</div>
+                                <div class="super-month-day header">Fri</div>
+                                <div class="super-month-day header">Sat</div>
+                                
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day">1</div>
+                                <div class="super-month-day">2</div>
+                                
+                                <div class="super-month-day">3</div>
+                                <div class="super-month-day">4</div>
+                                <div class="super-month-day today">5</div>
+                                <div class="super-month-day">6</div>
+                                <div class="super-month-day">7</div>
+                                <div class="super-month-day">8</div>
+                                <div class="super-month-day">9</div>
+                                
+                                <div class="super-month-day">10</div>
+                                <div class="super-month-day">11</div>
+                                <div class="super-month-day">12</div>
+                                <div class="super-month-day">13</div>
+                                <div class="super-month-day">14</div>
+                                <div class="super-month-day">15</div>
+                                <div class="super-month-day">16</div>
+                                
+                                <div class="super-month-day">17</div>
+                                <div class="super-month-day">18</div>
+                                <div class="super-month-day">19</div>
+                                <div class="super-month-day">20</div>
+                                <div class="super-month-day">21</div>
+                                <div class="super-month-day">22</div>
+                                <div class="super-month-day">23</div>
+                                
+                                <div class="super-month-day">24</div>
+                                <div class="super-month-day">25</div>
+                                <div class="super-month-day">26</div>
+                                <div class="super-month-day">27</div>
+                                <div class="super-month-day">28</div>
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day"></div>
+                            </div>
+                            
+                            <h3 class="super-section-title"><i class="fas fa-chart-line"></i> Weekly Stats</h3>
+                            <div class="stat-card" style="padding: 12px; margin-bottom: 10px;">
+                                <div class="stat-title">Tasks Completed</div>
+                                <div class="stat-value">24/32</div>
+                            </div>
+                            <div class="stat-card" style="padding: 12px; margin-bottom: 10px;">
+                                <div class="stat-title">Productivity Score</div>
+                                <div class="stat-value">87%</div>
+                            </div>
+                            
+                            <h3 class="super-section-title"><i class="fas fa-check-circle"></i> Habit Tracker</h3>
+                            <div class="habit-item" style="display: flex; align-items: center; margin-bottom: 10px; padding: 8px; background-color: #f8f9fa; border-radius: 10px;">
+                                <div class="habit-icon" style="width: 25px; height: 25px; background: linear-gradient(135deg, #4361ee, #3a0ca3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px; color: white; font-size: 0.8rem;">💧</div>
+                                <div class="habit-info" style="flex: 1; font-size: 0.9rem;">
+                                    <div class="habit-name">Drink Water</div>
+                                </div>
+                                <div class="habit-checkbox" style="width: 16px; height: 16px; border: 2px solid #ddd; border-radius: 50%; cursor: pointer;"></div>
+                            </div>
+                            <div class="habit-item" style="display: flex; align-items: center; margin-bottom: 10px; padding: 8px; background-color: #f8f9fa; border-radius: 10px;">
+                                <div class="habit-icon" style="width: 25px; height: 25px; background: linear-gradient(135deg, #4361ee, #3a0ca3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px; color: white; font-size: 0.8rem;">🏃</div>
+                                <div class="habit-info" style="flex: 1; font-size: 0.9rem;">
+                                    <div class="habit-name">Exercise</div>
+                                </div>
+                                <div class="habit-checkbox" style="width: 16px; height: 16px; border: 2px solid #ddd; border-radius: 50%; cursor: pointer;"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="super-days-grid">
+                            <!-- Monday -->
+                            <div class="super-day-card monday">
+                                <div class="super-day-header">
+                                    <div>
+                                        <div class="super-day-name">Monday</div>
+                                        <div class="super-day-date">Feb 2</div>
+                                    </div>
+                                    <div class="super-completion-rate">85%</div>
+                                </div>
+                                <div class="super-today-focus">Complete project proposal</div>
+                                
+                                <div class="super-tasks-section">
+                                    <h4><i class="fas fa-tasks"></i> Tasks</h4>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-high"></div>
+                                        <span>Finish client presentation</span>
+                                    </div>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-medium"></div>
+                                        <span>Team meeting at 2 PM</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-events-section">
+                                    <h4><i class="fas fa-calendar"></i> Events</h4>
+                                    <div class="event-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-event-type super-event-work"></div>
+                                        <span>Client Call - 10:00 AM</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-notes-section" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                                    <textarea placeholder="Add notes for Monday...">Need to prepare materials for client meeting</textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- Tuesday -->
+                            <div class="super-day-card tuesday">
+                                <div class="super-day-header">
+                                    <div>
+                                        <div class="super-day-name">Tuesday</div>
+                                        <div class="super-day-date">Feb 3</div>
+                                    </div>
+                                    <div class="super-completion-rate">70%</div>
+                                </div>
+                                <div class="super-today-focus">Prepare for conference call</div>
+                                
+                                <div class="super-tasks-section">
+                                    <h4><i class="fas fa-tasks"></i> Tasks</h4>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-high"></div>
+                                        <span>Conference call at 10 AM</span>
+                                    </div>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-medium"></div>
+                                        <span>Review quarterly reports</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-events-section">
+                                    <h4><i class="fas fa-calendar"></i> Events</h4>
+                                    <div class="event-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-event-type super-event-work"></div>
+                                        <span>Team Sync - 11:00 AM</span>
+                                    </div>
+                                    <div class="event-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-event-type super-event-personal"></div>
+                                        <span>Dentist Appointment - 4:00 PM</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-notes-section" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                                    <textarea placeholder="Add notes for Tuesday...">Remember to call dentist to confirm appointment</textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- Wednesday -->
+                            <div class="super-day-card wednesday">
+                                <div class="super-day-header">
+                                    <div>
+                                        <div class="super-day-name">Wednesday</div>
+                                        <div class="super-day-date">Feb 4</div>
+                                    </div>
+                                    <div class="super-completion-rate">90%</div>
+                                </div>
+                                <div class="super-today-focus">Submit project milestone</div>
+                                
+                                <div class="super-tasks-section">
+                                    <h4><i class="fas fa-tasks"></i> Tasks</h4>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-high"></div>
+                                        <span>Submit project milestone</span>
+                                    </div>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-medium"></div>
+                                        <span>Lunch with team</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-events-section">
+                                    <h4><i class="fas fa-calendar"></i> Events</h4>
+                                    <div class="event-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-event-type super-event-work"></div>
+                                        <span>Milestone Review - 2:00 PM</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-notes-section" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                                    <textarea placeholder="Add notes for Wednesday...">Prepare presentation for milestone review</textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- Thursday -->
+                            <div class="super-day-card thursday">
+                                <div class="super-day-header">
+                                    <div>
+                                        <div class="super-day-name">Thursday</div>
+                                        <div class="super-day-date">Feb 5</div>
+                                    </div>
+                                    <div class="super-completion-rate">60%</div>
+                                </div>
+                                <div class="super-today-focus">Review feedback and iterate</div>
+                                
+                                <div class="super-tasks-section">
+                                    <h4><i class="fas fa-tasks"></i> Tasks</h4>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-high"></div>
+                                        <span>Review feedback from stakeholders</span>
+                                    </div>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-medium"></div>
+                                        <span>Plan weekend activities</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-events-section">
+                                    <h4><i class="fas fa-calendar"></i> Events</h4>
+                                    <div class="event-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-event-type super-event-work"></div>
+                                        <span>Feedback Session - 9:00 AM</span>
+                                    </div>
+                                    <div class="event-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-event-type super-event-other"></div>
+                                        <span>Friend's Birthday - All Day</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-notes-section" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                                    <textarea placeholder="Add notes for Thursday...">Follow up on feedback received today</textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- Friday -->
+                            <div class="super-day-card friday">
+                                <div class="super-day-header">
+                                    <div>
+                                        <div class="super-day-name">Friday</div>
+                                        <div class="super-day-date">Feb 6</div>
+                                    </div>
+                                    <div class="super-completion-rate">75%</div>
+                                </div>
+                                <div class="super-today-focus">Wrap up week and plan next</div>
+                                
+                                <div class="super-tasks-section">
+                                    <h4><i class="fas fa-tasks"></i> Tasks</h4>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-high"></div>
+                                        <span>Weekly report submission</span>
+                                    </div>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-medium"></div>
+                                        <span>Team retrospective</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-events-section">
+                                    <h4><i class="fas fa-calendar"></i> Events</h4>
+                                    <div class="event-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-event-type super-event-work"></div>
+                                        <span>Retrospective - 3:00 PM</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-notes-section" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                                    <textarea placeholder="Add notes for Friday...">Prepare for next week's priorities</textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- Saturday -->
+                            <div class="super-day-card saturday">
+                                <div class="super-day-header">
+                                    <div>
+                                        <div class="super-day-name">Saturday</div>
+                                        <div class="super-day-date">Feb 7</div>
+                                    </div>
+                                    <div class="super-completion-rate">45%</div>
+                                </div>
+                                <div class="super-today-focus">Relax and recharge</div>
+                                
+                                <div class="super-tasks-section">
+                                    <h4><i class="fas fa-tasks"></i> Tasks</h4>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-low"></div>
+                                        <span>Grocery shopping</span>
+                                    </div>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-low"></div>
+                                        <span>Movie night</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-events-section">
+                                    <h4><i class="fas fa-calendar"></i> Events</h4>
+                                    <div class="event-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-event-type super-event-personal"></div>
+                                        <span>Family Dinner - 7:00 PM</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-notes-section" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                                    <textarea placeholder="Add notes for Saturday...">Relax and enjoy the weekend</textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- Sunday -->
+                            <div class="super-day-card sunday">
+                                <div class="super-day-header">
+                                    <div>
+                                        <div class="super-day-name">Sunday</div>
+                                        <div class="super-day-date">Feb 8</div>
+                                    </div>
+                                    <div class="super-completion-rate">30%</div>
+                                </div>
+                                <div class="super-today-focus">Prepare for upcoming week</div>
+                                
+                                <div class="super-tasks-section">
+                                    <h4><i class="fas fa-tasks"></i> Tasks</h4>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-medium"></div>
+                                        <span>Meal prep for week</span>
+                                    </div>
+                                    <div class="task-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-task-priority super-priority-low"></div>
+                                        <span>Read new book</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-events-section">
+                                    <h4><i class="fas fa-calendar"></i> Events</h4>
+                                    <div class="event-item" style="display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background-color: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                                        <div class="super-event-type super-event-personal"></div>
+                                        <span>Self-care Day - All Day</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="super-notes-section" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                                    <textarea placeholder="Add notes for Sunday...">Prepare mentally for the new week ahead</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'monthly':
+                    document.querySelector('.super-calendar-body').innerHTML = `
+                        <div class="super-sidebar">
+                            <h3 class="super-section-title"><i class="fas fa-calendar-alt"></i> Monthly Overview</h3>
+                            <div class="current-month" style="font-size: 1.2rem; font-weight: 600; margin-bottom: 15px; color: #4361ee; text-align: center;">
+                                ${new Date().toLocaleDateString('en-US', {month: 'long', year: 'numeric'})}
+                            </div>
+                            <div class="super-month-grid">
+                                <div class="super-month-day header">Sun</div>
+                                <div class="super-month-day header">Mon</div>
+                                <div class="super-month-day header">Tue</div>
+                                <div class="super-month-day header">Wed</div>
+                                <div class="super-month-day header">Thu</div>
+                                <div class="super-month-day header">Fri</div>
+                                <div class="super-month-day header">Sat</div>
+                                
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day">1</div>
+                                <div class="super-month-day">2</div>
+                                
+                                <div class="super-month-day">3</div>
+                                <div class="super-month-day">4</div>
+                                <div class="super-month-day today">5</div>
+                                <div class="super-month-day">6</div>
+                                <div class="super-month-day">7</div>
+                                <div class="super-month-day">8</div>
+                                <div class="super-month-day">9</div>
+                                
+                                <div class="super-month-day">10</div>
+                                <div class="super-month-day">11</div>
+                                <div class="super-month-day">12</div>
+                                <div class="super-month-day">13</div>
+                                <div class="super-month-day">14</div>
+                                <div class="super-month-day">15</div>
+                                <div class="super-month-day">16</div>
+                                
+                                <div class="super-month-day">17</div>
+                                <div class="super-month-day">18</div>
+                                <div class="super-month-day">19</div>
+                                <div class="super-month-day">20</div>
+                                <div class="super-month-day">21</div>
+                                <div class="super-month-day">22</div>
+                                <div class="super-month-day">23</div>
+                                
+                                <div class="super-month-day">24</div>
+                                <div class="super-month-day">25</div>
+                                <div class="super-month-day">26</div>
+                                <div class="super-month-day">27</div>
+                                <div class="super-month-day">28</div>
+                                <div class="super-month-day">29</div>
+                                <div class="super-month-day">30</div>
+                                
+                                <div class="super-month-day">31</div>
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day"></div>
+                                <div class="super-month-day"></div>
+                            </div>
+                            
+                            <h3 class="super-section-title"><i class="fas fa-chart-line"></i> Monthly Stats</h3>
+                            <div class="stat-card" style="padding: 12px; margin-bottom: 10px;">
+                                <div class="stat-title">Tasks Completed</div>
+                                <div class="stat-value">65/80</div>
+                            </div>
+                            <div class="stat-card" style="padding: 12px; margin-bottom: 10px;">
+                                <div class="stat-title">Productivity Score</div>
+                                <div class="stat-value">78%</div>
+                            </div>
+                        </div>
+                        <div style="background: white; border-radius: 15px; padding: 20px; height: 100%;">
+                            <h3 style="margin-bottom: 15px; color: #4361ee;">Monthly Overview</h3>
+                            <div style="display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: repeat(5, 1fr); gap: 10px; height: 100%;">
+                                <div style="background: #e3f2fd; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #1976d2;">1</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Meeting</div>
+                                </div>
+                                <div style="background: #e8f5e9; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #388e3c;">2</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Workout</div>
+                                </div>
+                                <div style="background: #fff3e0; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #f57c00;">3</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Appointment</div>
+                                </div>
+                                <div style="background: #e3f2fd; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #1976d2;">4</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Meeting</div>
+                                </div>
+                                <div style="background: #e8f5e9; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #388e3c;">5</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Workout</div>
+                                </div>
+                                <div style="background: #fce4ec; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #c2185b;">6</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Event</div>
+                                </div>
+                                <div style="background: #f3e5f5; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #7b1fa2;">7</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Rest</div>
+                                </div>
+                                <div style="background: #e3f2fd; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #1976d2;">8</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Meeting</div>
+                                </div>
+                                <div style="background: #e8f5e9; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #388e3c;">9</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Workout</div>
+                                </div>
+                                <div style="background: #fff3e0; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #f57c00;">10</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Appointment</div>
+                                </div>
+                                <div style="background: #e3f2fd; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #1976d2;">11</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Meeting</div>
+                                </div>
+                                <div style="background: #e8f5e9; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #388e3c;">12</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Workout</div>
+                                </div>
+                                <div style="background: #fce4ec; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #c2185b;">13</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Event</div>
+                                </div>
+                                <div style="background: #f3e5f5; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #7b1fa2;">14</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Rest</div>
+                                </div>
+                                <div style="background: #e3f2fd; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #1976d2;">15</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Meeting</div>
+                                </div>
+                                <div style="background: #e8f5e9; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #388e3c;">16</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Workout</div>
+                                </div>
+                                <div style="background: #fff3e0; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #f57c00;">17</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Appointment</div>
+                                </div>
+                                <div style="background: #e3f2fd; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #1976d2;">18</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Meeting</div>
+                                </div>
+                                <div style="background: #e8f5e9; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #388e3c;">19</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Workout</div>
+                                </div>
+                                <div style="background: #fce4ec; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #c2185b;">20</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Event</div>
+                                </div>
+                                <div style="background: #f3e5f5; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #7b1fa2;">21</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Rest</div>
+                                </div>
+                                <div style="background: #e3f2fd; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #1976d2;">22</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Meeting</div>
+                                </div>
+                                <div style="background: #e8f5e9; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #388e3c;">23</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Workout</div>
+                                </div>
+                                <div style="background: #fff3e0; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #f57c00;">24</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Appointment</div>
+                                </div>
+                                <div style="background: #e3f2fd; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #1976d2;">25</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Meeting</div>
+                                </div>
+                                <div style="background: #e8f5e9; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #388e3c;">26</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Workout</div>
+                                </div>
+                                <div style="background: #fce4ec; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #c2185b;">27</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Event</div>
+                                </div>
+                                <div style="background: #f3e5f5; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #7b1fa2;">28</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Rest</div>
+                                </div>
+                                <div style="background: #e3f2fd; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #1976d2;">29</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Meeting</div>
+                                </div>
+                                <div style="background: #e8f5e9; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #388e3c;">30</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Workout</div>
+                                </div>
+                                <div style="background: #fff3e0; border-radius: 10px; padding: 10px; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 1.2rem; color: #f57c00;">31</div>
+                                    <div style="font-size: 0.8rem; margin-top: 5px;">Appointment</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'yearly':
+                    document.querySelector('.super-calendar-body').innerHTML = `
+                        <div class="super-sidebar">
+                            <h3 class="super-section-title"><i class="fas fa-calendar-alt"></i> Yearly Overview</h3>
+                            <div class="current-month" style="font-size: 1.2rem; font-weight: 600; margin-bottom: 15px; color: #4361ee; text-align: center;">
+                                ${new Date().getFullYear()}
+                            </div>
+                            
+                            <h3 class="super-section-title"><i class="fas fa-chart-line"></i> Annual Stats</h3>
+                            <div class="stat-card" style="padding: 12px; margin-bottom: 10px;">
+                                <div class="stat-title">Total Tasks Completed</div>
+                                <div class="stat-value">420/500</div>
+                            </div>
+                            <div class="stat-card" style="padding: 12px; margin-bottom: 10px;">
+                                <div class="stat-title">Average Productivity</div>
+                                <div class="stat-value">82%</div>
+                            </div>
+                        </div>
+                        <div style="background: white; border-radius: 15px; padding: 20px; height: 100%;">
+                            <h3 style="margin-bottom: 15px; color: #4361ee;">Annual Overview</h3>
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; height: 100%;">
+                                <div style="background: #e3f2fd; border-radius: 10px; padding: 15px; text-align: center;">
+                                    <div style="font-weight: bold; color: #1976d2; font-size: 1.1rem;">January</div>
+                                    <div style="margin-top: 10px; font-size: 2rem; font-weight: bold; color: #4361ee;">85%</div>
+                                    <div style="margin-top: 5px; font-size: 0.8rem;">Productivity</div>
+                                </div>
+                                <div style="background: #e8f5e9; border-radius: 10px; padding: 15px; text-align: center;">
+                                    <div style="font-weight: bold; color: #388e3c; font-size: 1.1rem;">February</div>
+                                    <div style="margin-top: 10px; font-size: 2rem; font-weight: bold; color: #4361ee;">87%</div>
+                                    <div style="margin-top: 5px; font-size: 0.8rem;">Productivity</div>
+                                </div>
+                                <div style="background: #fff3e0; border-radius: 10px; padding: 15px; text-align: center;">
+                                    <div style="font-weight: bold; color: #f57c00; font-size: 1.1rem;">March</div>
+                                    <div style="margin-top: 10px; font-size: 2rem; font-weight: bold; color: #4361ee;">78%</div>
+                                    <div style="margin-top: 5px; font-size: 0.8rem;">Productivity</div>
+                                </div>
+                                <div style="background: #f3e5f5; border-radius: 10px; padding: 15px; text-align: center;">
+                                    <div style="font-weight: bold; color: #7b1fa2; font-size: 1.1rem;">April</div>
+                                    <div style="margin-top: 10px; font-size: 2rem; font-weight: bold; color: #4361ee;">92%</div>
+                                    <div style="margin-top: 5px; font-size: 0.8rem;">Productivity</div>
+                                </div>
+                                <div style="background: #e0f2f1; border-radius: 10px; padding: 15px; text-align: center;">
+                                    <div style="font-weight: bold; color: #00695c; font-size: 1.1rem;">May</div>
+                                    <div style="margin-top: 10px; font-size: 2rem; font-weight: bold; color: #4361ee;">88%</div>
+                                    <div style="margin-top: 5px; font-size: 0.8rem;">Productivity</div>
+                                </div>
+                                <div style="background: #ede7f6; border-radius: 10px; padding: 15px; text-align: center;">
+                                    <div style="font-weight: bold; color: #5e35b1; font-size: 1.1rem;">June</div>
+                                    <div style="margin-top: 10px; font-size: 2rem; font-weight: bold; color: #4361ee;">81%</div>
+                                    <div style="margin-top: 5px; font-size: 0.8rem;">Productivity</div>
+                                </div>
+                                <div style="background: #fbe9e7; border-radius: 10px; padding: 15px; text-align: center;">
+                                    <div style="font-weight: bold; color: #bf360c; font-size: 1.1rem;">July</div>
+                                    <div style="margin-top: 10px; font-size: 2rem; font-weight: bold; color: #4361ee;">85%</div>
+                                    <div style="margin-top: 5px; font-size: 0.8rem;">Productivity</div>
+                                </div>
+                                <div style="background: #efebe9; border-radius: 10px; padding: 15px; text-align: center;">
+                                    <div style="font-weight: bold; color: #6d4c41; font-size: 1.1rem;">August</div>
+                                    <div style="margin-top: 10px; font-size: 2rem; font-weight: bold; color: #4361ee;">90%</div>
+                                    <div style="margin-top: 5px; font-size: 0.8rem;">Productivity</div>
+                                </div>
+                                <div style="background: #e0f7fa; border-radius: 10px; padding: 15px; text-align: center;">
+                                    <div style="font-weight: bold; color: #00838f; font-size: 1.1rem;">September</div>
+                                    <div style="margin-top: 10px; font-size: 2rem; font-weight: bold; color: #4361ee;">83%</div>
+                                    <div style="margin-top: 5px; font-size: 0.8rem;">Productivity</div>
+                                </div>
+                                <div style="background: #f1f8e9; border-radius: 10px; padding: 15px; text-align: center;">
+                                    <div style="font-weight: bold; color: #9e9d24; font-size: 1.1rem;">October</div>
+                                    <div style="margin-top: 10px; font-size: 2rem; font-weight: bold; color: #4361ee;">86%</div>
+                                    <div style="margin-top: 5px; font-size: 0.8rem;">Productivity</div>
+                                </div>
+                                <div style="background: #ffebee; border-radius: 10px; padding: 15px; text-align: center;">
+                                    <div style="font-weight: bold; color: #e53935; font-size: 1.1rem;">November</div>
+                                    <div style="margin-top: 10px; font-size: 2rem; font-weight: bold; color: #4361ee;">79%</div>
+                                    <div style="margin-top: 5px; font-size: 0.8rem;">Productivity</div>
+                                </div>
+                                <div style="background: #fafafa; border-radius: 10px; padding: 15px; text-align: center;">
+                                    <div style="font-weight: bold; color: #757575; font-size: 1.1rem;">December</div>
+                                    <div style="margin-top: 10px; font-size: 2rem; font-weight: bold; color: #4361ee;">87%</div>
+                                    <div style="margin-top: 5px; font-size: 0.8rem;">Productivity</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            // Reinitialize habit checkboxes for the new view
+            const newHabitCheckboxes = document.querySelectorAll('.habit-checkbox');
+            newHabitCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('click', function() {
+                    this.classList.toggle('checked');
+                    if (this.classList.contains('checked')) {
+                        this.style.backgroundColor = '#06d6a0';
+                        this.style.borderColor = '#06d6a0';
+                    } else {
+                        this.style.backgroundColor = '';
+                        this.style.borderColor = '#ddd';
+                    }
+                });
+            });
+        }
+        
+        // Show event modal when clicking on calendar items
+        function showEventModal(date, dayElement) {
+            // Create modal overlay
+            const modal = document.createElement('div');
+            modal.id = 'event-modal';
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+            modal.style.zIndex = '1000';
+            modal.style.display = 'flex';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+            
+            // Create modal content
+            const modalContent = document.createElement('div');
+            modalContent.style.backgroundColor = 'white';
+            modalContent.style.padding = '30px';
+            modalContent.style.borderRadius = '15px';
+            modalContent.style.width = '400px';
+            modalContent.style.maxWidth = '90%';
+            modalContent.style.boxShadow = '0 10px 30px rgba(0,0,0,0.3)';
+            modalContent.style.textAlign = 'center';
+            
+            modalContent.innerHTML = `
+                <h3 style="margin-top:0; color: #4361ee;">Schedule for ${date}</h3>
+                <p>Select an event type:</p>
+                <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="addBooking('${date}', 'booking', this)" style="padding: 12px; font-size: 1rem; margin: 5px 0;">📅 Book a Session</button>
+                    <button class="btn btn-success" onclick="addBooking('${date}', 'availability', this)" style="padding: 12px; font-size: 1rem; margin: 5px 0;">⏱️ Set Availability</button>
+                    <button class="btn btn-outline" onclick="closeModal()" style="padding: 12px; font-size: 1rem; margin: 5px 0;">Cancel</button>
+                </div>
+            `;
+            
+            // Close modal when clicking outside content
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+            
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+        }
+        
+        // Close modal function
+        function closeModal() {
+            const modal = document.getElementById('event-modal');
+            if (modal) {
+                modal.remove();
             }
         }
-
-        // Initialize calendar on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log("DOM loaded, initializing calendar");
-            generateCalendar(currentMonth, currentYear);
-        });
         
-        // Additional initialization to ensure functionality
-        window.onload = function() {
-            console.log("Window loaded");
+        // Add booking to the calendar
+        function addBooking(date, type, element) {
+            const buttonText = element.textContent;
+            alert(\`You selected: \${buttonText}\\nDate: \${date}\\nThis would connect to your scheduling system.\`);
+            closeModal();
+        }
+        
+        // Super Calendar Interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Habit tracking functionality
+            const habitCheckboxes = document.querySelectorAll('.habit-checkbox');
+            habitCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('click', function() {
+                    this.classList.toggle('checked');
+                    if (this.classList.contains('checked')) {
+                        this.style.backgroundColor = '#06d6a0';
+                        this.style.borderColor = '#06d6a0';
+                    } else {
+                        this.style.backgroundColor = '';
+                        this.style.borderColor = '#ddd';
+                    }
+                });
+            });
             
-            // Set min date for appointment booking to today
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('appointmentDate').min = today;
+            // Add event listeners to Super Calendar controls
+            const superControlBtns = document.querySelectorAll('.super-control-btn');
+            superControlBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const btnText = this.textContent.trim();
+                    if (btnText.includes('Today')) {
+                        alert('Navigating to today!');
+                    } else if (btnText.includes('Add Event')) {
+                        alert('Add new event functionality would open here.');
+                    }
+                });
+            });
             
-            // Set default theme
-            document.getElementById('themeSelector').value = currentTheme;
-        };
+            // Add event listeners to month navigation
+            const navBtns = document.querySelectorAll('.nav-btn');
+            navBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    alert('Month navigation would occur here.');
+                });
+            });
+            
+            // Add click events to day cards for event selection
+            const dayCards = document.querySelectorAll('.super-day-card');
+            dayCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const dayName = this.querySelector('.super-day-name').textContent;
+                    const dayDate = this.querySelector('.super-day-date').textContent;
+                    const fullDate = \`\${dayName}, \${dayDate}\`;
+                    showEventModal(fullDate, this);
+                });
+            });
+            
+            // Add click events to monthly calendar days
+            const monthDays = document.querySelectorAll('.super-month-day:not(.header)');
+            monthDays.forEach(day => {
+                day.addEventListener('click', function() {
+                    if (this.textContent.trim() !== '') {
+                        const dayNum = this.textContent;
+                        const monthYear = document.querySelector('.current-month').textContent;
+                        const fullDate = \`\${dayNum} \${monthYear}\`;
+                        showEventModal(fullDate, this);
+                    }
+                });
+            });
+            
+            // Initialize unchecked habit checkboxes
+            habitCheckboxes.forEach(checkbox => {
+                checkbox.style.backgroundColor = '';
+                checkbox.style.borderColor = '#ddd';
+            });
+        });
     </script>
 </body>
 </html>
