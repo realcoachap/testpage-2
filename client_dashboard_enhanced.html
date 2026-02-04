@@ -810,6 +810,7 @@
                 <li><a href="#" onclick="showSection('calculator')"><i class="fas fa-calculator"></i> <span>Calorie Calculator</span></a></li>
                 <li><a href="#" onclick="showSection('resources')"><i class="fas fa-book"></i> <span>Resources</span></a></li>
                 <li><a href="#" onclick="showSection('settings')"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+                <li><a href="#" onclick="showSection('xp')"><i class="fas fa-trophy"></i> <span>XP - Level UP!</span></a></li>
             </ul>
         </aside>
 
@@ -1293,6 +1294,7 @@
             document.getElementById('scheduleSection').style.display = 'none';
             document.getElementById('messagesSection').style.display = 'none';
             document.getElementById('calculatorSection').style.display = 'none';
+            document.getElementById('xpSection').style.display = 'none';
             
             // Show dashboard if not a special section
             document.querySelector('.stats-grid').parentElement.style.display = 'block';
@@ -1327,6 +1329,61 @@
                     grid.style.display = 'none';
                 });
                 document.getElementById('calculatorSection').style.display = 'block';
+            } else if (section === 'xp') {
+                document.querySelector('.stats-grid').parentElement.style.display = 'none';
+                document.querySelectorAll('.dashboard-grid').forEach(grid => {
+                    grid.style.display = 'none';
+                });
+                // Create XP section if it doesn't exist
+                let xpSection = document.getElementById('xpSection');
+                if (!xpSection) {
+                    xpSection = document.createElement('div');
+                    xpSection.id = 'xpSection';
+                    xpSection.className = 'calendar-section';
+                    xpSection.innerHTML = `
+                        <div style="background: white; border-radius: 20px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+                            <h2 style="color: #4361ee; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-trophy"></i> XP - Level UP!
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                                <div style="background: linear-gradient(135deg, #4361ee, #3a0ca3); color: white; padding: 20px; border-radius: 15px; text-align: center;">
+                                    <div style="font-size: 3rem; font-weight: bold;">1,250</div>
+                                    <div style="font-size: 1.2rem; margin: 10px 0;">Current XP</div>
+                                    <div style="font-size: 0.9rem; opacity: 0.9;">+150 earned this week</div>
+                                </div>
+                                <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; text-align: center;">
+                                    <div style="font-size: 2rem; font-weight: bold; color: #4361ee;">Level 8</div>
+                                    <div style="margin: 15px 0;">
+                                        <div style="background: #e0e0e0; border-radius: 10px; overflow: hidden; height: 20px;">
+                                            <div style="background: linear-gradient(90deg, #4cc9f0, #4361ee); height: 100%; width: 65%;"></div>
+                                        </div>
+                                    </div>
+                                    <div>65% to next level</div>
+                                </div>
+                                <div style="background: #e8f4f8; padding: 20px; border-radius: 15px;">
+                                    <h3 style="color: #4361ee; margin-top: 0;">Recent Achievements</h3>
+                                    <ul style="list-style: none; padding: 0;">
+                                        <li style="padding: 8px 0; border-bottom: 1px solid #ddd;"><i class="fas fa-medal" style="color: gold; margin-right: 10px;"></i> Consistency King (7-day streak)</li>
+                                        <li style="padding: 8px 0; border-bottom: 1px solid #ddd;"><i class="fas fa-fire" style="color: orange; margin-right: 10px;"></i> Workout Warrior</li>
+                                        <li style="padding: 8px 0;"><i class="fas fa-star" style="color: purple; margin-right: 10px;"></i> Early Bird Special</li>
+                                    </ul>
+                                </div>
+                                <div style="background: #f0f8e8; padding: 20px; border-radius: 15px;">
+                                    <h3 style="color: #4361ee; margin-top: 0;">XP Earning Activities</h3>
+                                    <ul style="list-style: none; padding: 0;">
+                                        <li style="padding: 8px 0; display: flex; justify-content: space-between;"><span>Complete a workout</span> <span style="font-weight: bold;">+50 XP</span></li>
+                                        <li style="padding: 8px 0; display: flex; justify-content: space-between;"><span>Attend a session</span> <span style="font-weight: bold;">+75 XP</span></li>
+                                        <li style="padding: 8px 0; display: flex; justify-content: space-between;"><span>Log nutrition</span> <span style="font-weight: bold;">+25 XP</span></li>
+                                        <li style="padding: 8px 0; display: flex; justify-content: space-between;"><span>Reach daily goal</span> <span style="font-weight: bold;">+100 XP</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    document.querySelector('.main-content').appendChild(xpSection);
+                } else {
+                    xpSection.style.display = 'block';
+                }
             } else if (section === 'dashboard') {
                 document.querySelector('.stats-grid').parentElement.style.display = 'block';
                 document.querySelectorAll('.dashboard-grid').forEach(grid => {
