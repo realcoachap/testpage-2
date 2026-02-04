@@ -559,6 +559,73 @@
             color: #856404;
         }
         
+        /* WhatsApp Calendar Section */
+        .whatsapp-calendar-section {
+            display: none;
+            margin-top: 2rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .whatsapp-calendar-section.visible {
+            display: block !important;
+            opacity: 1;
+        }
+        
+        .whatsapp-calendar-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            min-height: 600px;
+            position: relative;
+        }
+        
+        .whatsapp-calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .whatsapp-calendar-info {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .whatsapp-calendar-features {
+            margin: 1rem 0;
+        }
+        
+        .whatsapp-calendar-features ul {
+            padding-left: 1.5rem;
+        }
+        
+        .whatsapp-calendar-features li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .whatsapp-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+        
+        .whatsapp-button:hover {
+            background: #1da851;
+        }
+        
         /* Messages Section (Initially Hidden) */
         .messages-section {
             display: none;
@@ -702,6 +769,7 @@
                 <li><a href="#" onclick="showSection('messages', event)"><i class="fas fa-comments"></i> <span>Messages</span></a></li>
                 <li><a href="#" onclick="showSection('schedule', event)"><i class="fas fa-calendar-alt"></i> <span>Schedule</span></a></li>
                 <li><a href="#" onclick="showSection('google-calendar', event)"><i class="fas fa-google"></i> <span>Google Calendar</span></a></li>
+                <li><a href="#" onclick="showSection('whatsapp-calendar', event)"><i class="fab fa-whatsapp"></i> <span>WhatsApp Calendar</span></a></li>
                 <li><a href="#" onclick="showSection('calculator', event)"><i class="fas fa-calculator"></i> <span>Calorie Calculator</span></a></li>
                 <li><a href="#" onclick="showSection('resources', event)"><i class="fas fa-book"></i> <span>Resources</span></a></li>
                 <li><a href="#" onclick="showSection('settings', event)"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
@@ -941,6 +1009,67 @@
                 </div>
             </div>
 
+            <!-- WhatsApp Calendar Section -->
+            <div id="whatsappCalendarSection" class="whatsapp-calendar-section">
+                <div class="whatsapp-calendar-container">
+                    <div class="whatsapp-calendar-header">
+                        <h3>WhatsApp Calendar Integration</h3>
+                    </div>
+                    <div class="whatsapp-calendar-info">
+                        <p><strong>Integrated Scheduling via WhatsApp</strong></p>
+                        <p>Connect your calendar with WhatsApp to receive automatic appointment confirmations, reminders, and scheduling updates.</p>
+                    </div>
+                    
+                    <div class="whatsapp-calendar-features">
+                        <h4>Features:</h4>
+                        <ul>
+                            <li>Automatic appointment confirmations via WhatsApp</li>
+                            <li>Smart reminder notifications before appointments</li>
+                            <li>Easy rescheduling through WhatsApp messages</li>
+                            <li>Availability updates in real-time</li>
+                            <li>Integration with your Google Calendar</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin: 1.5rem 0;">
+                        <h4>Schedule Appointment via WhatsApp:</h4>
+                        <p>Click the button below to contact your trainer directly through WhatsApp to schedule an appointment:</p>
+                        <a href="https://wa.me/13057840724" target="_blank" class="whatsapp-button">
+                            <i class="fab fa-whatsapp"></i> Message Your Trainer
+                        </a>
+                    </div>
+                    
+                    <div style="margin: 1.5rem 0;">
+                        <h4>Book Appointment:</h4>
+                        <p>Alternatively, you can request a booking by filling out this form:</p>
+                        <form id="bookingForm" style="margin-top: 1rem;">
+                            <div class="form-group">
+                                <label for="appointmentDate">Preferred Date</label>
+                                <input type="date" id="appointmentDate" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="appointmentTime">Preferred Time</label>
+                                <input type="time" id="appointmentTime" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="appointmentType">Appointment Type</label>
+                                <select id="appointmentType" class="form-control">
+                                    <option value="personal-training">Personal Training</option>
+                                    <option value="consultation">Consultation</option>
+                                    <option value="check-in">Check-in</option>
+                                    <option value="assessment">Body Assessment</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="appointmentNotes">Notes</label>
+                                <textarea id="appointmentNotes" class="form-control" rows="3" placeholder="Any special requests or notes..."></textarea>
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="sendBookingRequest()">Send Booking Request</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
             <!-- Messages Section -->
             <div id="messagesSection" class="messages-section">
                 <div class="messages-container">
@@ -1029,7 +1158,7 @@
             }
             
             // Hide all sections first
-            const allSections = document.querySelectorAll('.calendar-section, .google-calendar-section, .messages-section, .calculator-section, .dashboard-grid');
+            const allSections = document.querySelectorAll('.calendar-section, .google-calendar-section, .whatsapp-calendar-section, .messages-section, .calculator-section, .dashboard-grid');
             allSections.forEach(sec => {
                 if (sec) {
                     sec.style.display = 'none';
@@ -1085,14 +1214,14 @@
                                 inline: 'nearest'
                             });
                             
+                            // Additional forced visibility for calendar section
+                            scheduleSection.style.visibility = 'visible';
+                            scheduleSection.style.opacity = '1';
+                            
                             // Generate calendar after ensuring visibility
                             setTimeout(() => {
                                 generateCalendar(currentMonth, currentYear);
                                 console.log("Calendar generated");
-                                
-                                // Additional forced visibility for calendar section
-                                scheduleSection.style.visibility = 'visible';
-                                scheduleSection.style.opacity = '1';
                             }, 100);
                         }
                         break;
@@ -1121,6 +1250,33 @@
                             // Additional forced visibility for Google calendar section
                             googleCalendarSection.style.visibility = 'visible';
                             googleCalendarSection.style.opacity = '1';
+                        }
+                        break;
+                        
+                    case 'whatsapp-calendar':
+                        console.log("Showing WhatsApp Calendar section");
+                        document.querySelectorAll('.dashboard-grid').forEach(grid => {
+                            grid.style.display = 'none';
+                        });
+                        
+                        const whatsappCalendarSection = document.getElementById('whatsappCalendarSection');
+                        if (whatsappCalendarSection) {
+                            whatsappCalendarSection.style.display = 'block';
+                            whatsappCalendarSection.classList.add('visible');
+                            
+                            // Force layout recalculation
+                            whatsappCalendarSection.offsetHeight;
+                            
+                            // Smooth scroll to section
+                            whatsappCalendarSection.scrollIntoView({ 
+                                behavior: 'smooth', 
+                                block: 'start',
+                                inline: 'nearest'
+                            });
+                            
+                            // Additional forced visibility for WhatsApp calendar section
+                            whatsappCalendarSection.style.visibility = 'visible';
+                            whatsappCalendarSection.style.opacity = '1';
                         }
                         break;
                         
@@ -1309,6 +1465,40 @@
             `;
         }
 
+        // WhatsApp booking request function
+        function sendBookingRequest() {
+            const date = document.getElementById('appointmentDate').value;
+            const time = document.getElementById('appointmentTime').value;
+            const type = document.getElementById('appointmentType').value;
+            const notes = document.getElementById('appointmentNotes').value;
+            
+            if (!date || !time) {
+                alert('Please select both date and time for your appointment.');
+                return;
+            }
+            
+            // Format the appointment details into a message
+            const appointmentDetails = {
+                date: new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+                time: time,
+                type: document.getElementById('appointmentType').options[document.getElementById('appointmentType').selectedIndex].text,
+                notes: notes || 'No additional notes'
+            };
+            
+            // Create a WhatsApp message with the appointment details
+            const whatsappMessage = encodeURIComponent(
+                `Hello! I'd like to book an appointment:\n\n` +
+                `Date: ${appointmentDetails.date}\n` +
+                `Time: ${appointmentDetails.time}\n` +
+                `Type: ${appointmentDetails.type}\n` +
+                `Notes: ${appointmentDetails.notes}\n\n` +
+                `Please confirm my booking. Thanks!`
+            );
+            
+            // Open WhatsApp with the pre-filled message
+            window.open(`https://wa.me/13057840724?text=${whatsappMessage}`, '_blank');
+        }
+
         // Calorie calculator
         function calculateCalories() {
             const gender = document.getElementById('gender').value;
@@ -1355,6 +1545,10 @@
         // Additional initialization to ensure functionality
         window.onload = function() {
             console.log("Window loaded");
+            
+            // Set min date for appointment booking to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('appointmentDate').min = today;
         };
     </script>
 </body>
