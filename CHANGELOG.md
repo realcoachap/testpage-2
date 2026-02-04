@@ -1,5 +1,13 @@
 # EliteFit Personal Training Website - Changelog
 
+## Version 2.0 - February 4, 2026
+### Added
+- Introducing "Super Calendar" with multiple theme options
+- Professional, Fun & Playful, Elegant, and Sporty themes
+- Theme selector dropdown in calendar header
+- Enhanced aesthetics with "business in the front, party in the back" concept
+- Improved hover effects and animations for better user experience
+
 ## Version 1.9 - February 4, 2026
 ### Added
 - Availability checking and time slot selection for calendar
