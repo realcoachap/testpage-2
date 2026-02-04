@@ -1,4 +1,4 @@
-# EliteFit Personal Training Website
+# Ascended Fitness by Coach AP - Personal Training Website
 
 ## Overview
 A comprehensive website for a personal training business incorporating the best features from leading platforms like TrueCoach, Trainerize, Mindbody, and ClubReady.
