@@ -455,12 +455,6 @@
             margin-bottom: 1rem;
         }
         
-        .calendar-controls {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        
         .calendar-nav {
             display: flex;
             gap: 10px;
@@ -473,12 +467,6 @@
             padding: 5px 10px;
             border-radius: 3px;
             cursor: pointer;
-        }
-        
-        .theme-selector {
-            padding: 5px 10px;
-            border-radius: 3px;
-            border: 1px solid #ddd;
         }
         
         .calendar-grid {
@@ -504,13 +492,10 @@
             cursor: pointer;
             border: 1px solid #eee;
             position: relative;
-            transition: all 0.3s ease;
         }
         
         .calendar-day:hover {
             background: #f0f8ff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
         .calendar-day-number {
@@ -555,31 +540,6 @@
         .limited {
             background: var(--warning-color);
             color: white;
-        }
-        
-        /* Theme Classes */
-        .theme-professional {
-            --primary-color: #2c3e50;
-            --secondary-color: #34495e;
-            --accent-color: #3498db;
-        }
-        
-        .theme-fun {
-            --primary-color: #e74c3c;
-            --secondary-color: #f39c12;
-            --accent-color: #9b59b6;
-        }
-        
-        .theme-elegant {
-            --primary-color: #8e44ad;
-            --secondary-color: #16a085;
-            --accent-color: #f1c40f;
-        }
-        
-        .theme-sporty {
-            --primary-color: #27ae60;
-            --secondary-color: #e67e22;
-            --accent-color: #e74c3c;
         }
         
         /* Time Slot Modal */
@@ -1108,20 +1068,11 @@
             <div id="scheduleSection" class="calendar-section">
                 <div class="calendar-container">
                     <div class="calendar-header">
-                        <h3>Super Calendar - Your Ultimate Scheduling Solution</h3>
-                        <div class="calendar-controls">
-                            <select id="themeSelector" class="theme-selector" onchange="changeTheme(this.value)">
-                                <option value="default">Default Theme</option>
-                                <option value="professional">Professional</option>
-                                <option value="fun">Fun & Playful</option>
-                                <option value="elegant">Elegant</option>
-                                <option value="sporty">Sporty</option>
-                            </select>
-                            <div class="calendar-nav">
-                                <button onclick="prevMonth()"><i class="fas fa-chevron-left"></i></button>
-                                <button onclick="today()">Today</button>
-                                <button onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
-                            </div>
+                        <h3>Interactive Calendar - Availability Checker</h3>
+                        <div class="calendar-nav">
+                            <button onclick="prevMonth()"><i class="fas fa-chevron-left"></i></button>
+                            <button onclick="today()">Today</button>
+                            <button onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
                         </div>
                     </div>
                     <div id="calendarGrid" class="calendar-grid">
@@ -1214,7 +1165,12 @@
                             </div>
                             <div class="form-group">
                                 <label for="appointmentType">Appointment Type</label>
-                                <input type="hidden" id="appointmentType" value="personal-training">
+                                <select id="appointmentType" class="form-control">
+                                    <option value="personal-training">Personal Training</option>
+                                    <option value="consultation">Consultation</option>
+                                    <option value="check-in">Check-in</option>
+                                    <option value="assessment">Body Assessment</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="appointmentNotes">Notes</label>
@@ -1295,7 +1251,6 @@
         let currentMonth = currentDate.getMonth();
         let currentYear = currentDate.getFullYear();
         let selectedDate = null;
-        let currentTheme = 'default';
 
         // Availability data structure - in a real app this would come from a backend
         let availabilityData = {};
@@ -1354,27 +1309,6 @@
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
             return `${year}-${month}-${day}`;
-        }
-
-        // Theme changing functionality
-        function changeTheme(theme) {
-            const body = document.body;
-            
-            // Remove all theme classes
-            body.classList.remove('theme-professional', 'theme-fun', 'theme-elegant', 'theme-sporty');
-            
-            // Apply new theme if not default
-            if (theme !== 'default') {
-                body.classList.add(`theme-${theme}`);
-            }
-            
-            // Store selected theme
-            currentTheme = theme;
-            
-            // Regenerate calendar to apply theme changes to the calendar grid
-            if (document.getElementById('scheduleSection').style.display !== 'none') {
-                generateCalendar(currentMonth, currentYear);
-            }
         }
 
         // Logout function
@@ -1799,6 +1733,7 @@
         function sendBookingRequest() {
             const date = document.getElementById('appointmentDate').value;
             const time = document.getElementById('appointmentTime').value;
+            const type = document.getElementById('appointmentType').value;
             const notes = document.getElementById('appointmentNotes').value;
             
             if (!date || !time) {
@@ -1810,7 +1745,7 @@
             const appointmentDetails = {
                 date: new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
                 time: time,
-                type: 'Personal Training Session',
+                type: document.getElementById('appointmentType').options[document.getElementById('appointmentType').selectedIndex].text,
                 notes: notes || 'No additional notes'
             };
             
@@ -1886,9 +1821,6 @@
             // Set min date for appointment booking to today
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('appointmentDate').min = today;
-            
-            // Set default theme
-            document.getElementById('themeSelector').value = currentTheme;
         };
     </script>
 </body>

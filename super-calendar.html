@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Calendar - Enhanced Productivity</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* Enhanced Pastel Color Palette */
+            --monday-color: #a8e6cf;
+            --tuesday-color: #fffac8;
+            --wednesday-color: #ffd3a5;
+            --thursday-color: #ffb3ba;
+            --friday-color: #b5ead7;
+            --saturday-color: #c7ceea;
+            --sunday-color: #ffd8e6;
+            
+            /* Accent Colors */
+            --high-priority: #ff6b6b;
+            --medium-priority: #ffd166;
+            --low-priority: #06d6a0;
+            --progress-bg: #e0e0e0;
+            --progress-fill: #4cc9f0;
+            --accent-primary: #4361ee;
+            --accent-secondary: #3a0ca3;
+            
+            /* Neutral Colors */
+            --bg-white: #ffffff;
+            --border-color: #e0e0e0;
+            --text-dark: #333333;
+            --text-light: #777777;
+            --shadow-light: 0 2px 10px rgba(0,0,0,0.05);
+            --shadow-medium: 0 4px 15px rgba(0,0,0,0.08);
+            --shadow-heavy: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-dark);
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: var(--bg-white);
+            border-radius: 20px;
+            box-shadow: var(--shadow-medium);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+        
+        .header p {
+            color: var(--text-light);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        
+        .date-display {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--accent-primary);
+        }
+        
+        .calendar-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .control-btn {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-light);
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .calendar-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .sidebar {
+            background: var(--bg-white);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow-medium);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: var(--accent-secondary);
+        }
+        
+        .monthly-view {
+            margin-bottom: 30px;
+        }
+        
+        .current-month {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--accent-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .month-navigation {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .nav-btn {
+            background: #f0f0f0;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-btn:hover {
+            background: var(--accent-primary);
+            color: white;
+        }
+        
+        .month-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+        
+        .month-day {
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 0.9rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            min-height: 40px;
+        }
+        
+        .month-day.header {
+            font-weight: 700;
+            color: var(--text-light);
+            background: none !important;
+            cursor: default;
+        }
+        
+        .month-day:hover:not(.header) {
+            background-color: #f0f0f0;
+            transform: scale(1.05);
+        }
+        
+        .month-day.today {
+            background-color: var(--accent-primary);
+            color: white;
+            font-weight: 600;
+            transform: scale(1.05);
+        }
+        
+        .month-day.has-events::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background-color: var(--high-priority);
+            border-radius: 50%;
+        }
+        
+        .stats-section {
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-title {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+        
+        .progress-section {
+            margin-bottom: 30px;
+        }
+        
+        .progress-item {
+            margin-bottom: 15px;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background-color: var(--progress-bg);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--progress-fill), var(--accent-primary));
+            border-radius: 10px;
+        }
+        
+        .habits-section {
+            margin-bottom: 30px;
+        }
+        
+        .habit-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 12px;
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            transition: all 0.2s ease;
+        }
+        
+        .habit-item:hover {
+            background-color: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .habit-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .habit-info {
+            flex: 1;
+        }
+        
+        .habit-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .habit-streak {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        
+        .habit-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .habit-checkbox.checked {
+            background: var(--low-priority);
+            border-color: var(--low-priority);
+        }
+        
+        .habit-checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-size: 0.8rem;
+        }
+        
+        .quick-actions {
+            margin-top: 20px;
+        }
+        
+        .action-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            text-align: left;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .action-btn:hover {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+        
+        .day-card {
+            background: var(--bg-white);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow-medium);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 400px;
+        }
+        
+        .day-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-heavy);
+        }
+        
+        .day-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+        }
+        
+        .day-card.monday::before { background: linear-gradient(90deg, var(--monday-color), #80c9a9); }
+        .day-card.tuesday::before { background: linear-gradient(90deg, var(--tuesday-color), #f0e6a8); }
+        .day-card.wednesday::before { background: linear-gradient(90deg, var(--wednesday-color), #ffa87a); }
+        .day-card.thursday::before { background: linear-gradient(90deg, var(--thursday-color), #ff8a94); }
+        .day-card.friday::before { background: linear-gradient(90deg, var(--friday-color), #8ad8af); }
+        .day-card.saturday::before { background: linear-gradient(90deg, var(--saturday-color), #a3aadd); }
+        .day-card.sunday::before { background: linear-gradient(90deg, var(--sunday-color), #ffb0c4); }
+        
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .day-name {
+            font-weight: 800;
+            font-size: 1.4rem;
+        }
+        
+        .day-date {
+            font-size: 1rem;
+            color: var(--text-light);
+        }
+        
+        .completion-rate {
+            background: linear-gradient(135deg, var(--progress-fill), var(--accent-primary));
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-light);
+        }
+        
+        .today-focus {
+            background: linear-gradient(135deg, var(--progress-fill), var(--accent-primary));
+            color: white;
+            padding: 18px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: var(--shadow-light);
+        }
+        
+        .tasks-section h4, .events-section h4 {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .task-list, .event-list {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+        
+        .task-item, .event-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px;
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+        
+        .task-item:hover, .event-item:hover {
+            background-color: #e9ecef;
+            transform: translateX(3px);
+        }
+        
+        .task-priority, .event-type {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            margin-right: 12px;
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
+        
+        .priority-high { background-color: var(--high-priority); }
+        .priority-medium { background-color: var(--medium-priority); }
+        .priority-low { background-color: var(--low-priority); }
+        
+        .event-personal { background: linear-gradient(135deg, #c7ceea, #a3aadd); }
+        .event-work { background: linear-gradient(135deg, #a8e6cf, #80c9a9); }
+        .event-other { background: linear-gradient(135deg, #ffd3a5, #ffa87a); }
+        
+        .task-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .task-action-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+        
+        .task-action-btn:hover {
+            color: var(--accent-primary);
+        }
+        
+        .notes-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .notes-section textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            resize: vertical;
+            min-height: 100px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+        
+        .notes-section textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+        }
+        
+        .add-task-section {
+            margin-top: 20px;
+        }
+        
+        .add-task-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .add-task-input input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 0.95rem;
+        }
+        
+        .add-task-input input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+        
+        .add-task-btn {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .priority-selector {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .priority-option {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .priority-option:hover {
+            background: #f8f9fa;
+        }
+        
+        .priority-option.selected {
+            border-color: var(--accent-primary);
+            background: rgba(67, 97, 238, 0.1);
+            font-weight: 600;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 1200px) {
+            .calendar-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: static;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .days-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .calendar-controls {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-calendar-alt"></i> SUPER CALENDAR</h1>
+            <p>Enhanced Productivity & Organization System</p>
+            <div class="date-display">Tuesday, February 3, 2026</div>
+            <div class="calendar-controls">
+                <button class="control-btn"><i class="fas fa-arrow-left"></i> Previous Week</button>
+                <button class="control-btn">Today <i class="fas fa-home"></i></button>
+                <button class="control-btn">Next Week <i class="fas fa-arrow-right"></i></button>
+                <button class="control-btn"><i class="fas fa-plus"></i> Add Event</button>
+            </div>
+        </div>
+        
+        <div class="calendar-container">
+            <div class="sidebar">
+                <h2 class="section-title"><i class="fas fa-calendar-day"></i> Monthly Overview</h2>
+                <div class="current-month">
+                    February 2026
+                    <div class="month-navigation">
+                        <button class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+                        <button class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                <div class="month-grid">
+                    <div class="month-day header">Sun</div>
+                    <div class="month-day header">Mon</div>
+                    <div class="month-day header">Tue</div>
+                    <div class="month-day header">Wed</div>
+                    <div class="month-day header">Thu</div>
+                    <div class="month-day header">Fri</div>
+                    <div class="month-day header">Sat</div>
+                    
+                    <div class="month-day"></div>
+                    <div class="month-day"></div>
+                    <div class="month-day"></div>
+                    <div class="month-day"></div>
+                    <div class="month-day"></div>
+                    <div class="month-day">1</div>
+                    <div class="month-day">2</div>
+                    
+                    <div class="month-day">3</div>
+                    <div class="month-day">4</div>
+                    <div class="month-day today has-events">5</div>
+                    <div class="month-day has-events">6</div>
+                    <div class="month-day">7</div>
+                    <div class="month-day">8</div>
+                    <div class="month-day">9</div>
+                    
+                    <div class="month-day">10</div>
+                    <div class="month-day">11</div>
+                    <div class="month-day">12</div>
+                    <div class="month-day">13</div>
+                    <div class="month-day">14</div>
+                    <div class="month-day">15</div>
+                    <div class="month-day">16</div>
+                    
+                    <div class="month-day">17</div>
+                    <div class="month-day">18</div>
+                    <div class="month-day">19</div>
+                    <div class="month-day">20</div>
+                    <div class="month-day">21</div>
+                    <div class="month-day">22</div>
+                    <div class="month-day">23</div>
+                    
+                    <div class="month-day">24</div>
+                    <div class="month-day">25</div>
+                    <div class="month-day">26</div>
+                    <div class="month-day">27</div>
+                    <div class="month-day">28</div>
+                    <div class="month-day"></div>
+                    <div class="month-day"></div>
+                </div>
+                
+                <div class="stats-section">
+                    <h2 class="section-title"><i class="fas fa-chart-line"></i> Weekly Stats</h2>
+                    <div class="stat-card">
+                        <div class="stat-title">Tasks Completed</div>
+                        <div class="stat-value">24/32</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Productivity Score</div>
+                        <div class="stat-value">87%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Habits Maintained</div>
+                        <div class="stat-value">7/8</div>
+                    </div>
+                </div>
+                
+                <div class="progress-section">
+                    <h2 class="section-title"><i class="fas fa-tasks"></i> Progress Tracking</h2>
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>Work Projects</span>
+                            <span>85%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>Personal Goals</span>
+                            <span>65%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>Learning</span>
+                            <span>90%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 90%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="habits-section">
+                    <h2 class="section-title"><i class="fas fa-check-circle"></i> Habit Tracker</h2>
+                    <div class="habit-item">
+                        <div class="habit-icon">💧</div>
+                        <div class="habit-info">
+                            <div class="habit-name">Drink Water</div>
+                            <div class="habit-streak">7-day streak</div>
+                        </div>
+                        <div class="habit-checkbox checked"></div>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-icon">🏃</div>
+                        <div class="habit-info">
+                            <div class="habit-name">Exercise</div>
+                            <div class="habit-streak">3-day streak</div>
+                        </div>
+                        <div class="habit-checkbox"></div>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-icon">😴</div>
+                        <div class="habit-info">
+                            <div class="habit-name">Sleep 8h</div>
+                            <div class="habit-streak">5-day streak</div>
+                        </div>
+                        <div class="habit-checkbox checked"></div>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-icon">📖</div>
+                        <div class="habit-info">
+                            <div class="habit-name">Read</div>
+                            <div class="habit-streak">10-day streak</div>
+                        </div>
+                        <div class="habit-checkbox checked"></div>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-icon">🧘</div>
+                        <div class="habit-info">
+                            <div class="habit-name">Meditation</div>
+                            <div class="habit-streak">2-day streak</div>
+                        </div>
+                        <div class="habit-checkbox"></div>
+                    </div>
+                </div>
+                
+                <div class="quick-actions">
+                    <h2 class="section-title"><i class="fas fa-bolt"></i> Quick Actions</h2>
+                    <button class="action-btn"><i class="fas fa-plus-circle"></i> Add New Task</button>
+                    <button class="action-btn"><i class="fas fa-calendar-plus"></i> Schedule Meeting</button>
+                    <button class="action-btn"><i class="fas fa-sync-alt"></i> Sync Calendar</button>
+                    <button class="action-btn"><i class="fas fa-download"></i> Export Schedule</button>
+                    <button class="action-btn"><i class="fas fa-cog"></i> Settings</button>
+                </div>
+            </div>
+            
+            <div class="days-grid">
+                <!-- Monday -->
+                <div class="day-card monday">
+                    <div class="day-header">
+                        <div>
+                            <div class="day-name">Monday</div>
+                            <div class="day-date">Feb 2</div>
+                        </div>
+                        <div class="completion-rate">85%</div>
+                    </div>
+                    <div class="today-focus">Complete project proposal</div>
+                    
+                    <div class="tasks-section">
+                        <h4><i class="fas fa-tasks"></i> Tasks</h4>
+                        <ul class="task-list">
+                            <li class="task-item">
+                                <div class="task-priority priority-high"></div>
+                                <span>Finish client presentation</span>
+                                <div class="task-actions">
+                                    <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-priority priority-medium"></div>
+                                <span>Team meeting at 2 PM</span>
+                                <div class="task-actions">
+                                    <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-priority priority-low"></div>
+                                <span>Organize desk</span>
+                                <div class="task-actions">
+                                    <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="events-section">
+                        <h4><i class="fas fa-calendar"></i> Events</h4>
+                        <ul class="event-list">
+                            <li class="event-item">
+                                <div class="event-type event-work"></div>
+                                <span>Client Call - 10:00 AM</span>
+                            </li>
+                            <li class="event-item">
+                                <div class="event-type event-work"></div>
+                                <span>Project Review - 3:00 PM</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="notes-section">
+                        <textarea placeholder="Add notes for Monday...">Need to prepare materials for client meeting</textarea>
+                    </div>
+                </div>
+                
+                <!-- Tuesday -->
+                <div class="day-card tuesday">
+                    <div class="day-header">
+                        <div>
+                            <div class="day-name">Tuesday</div>
+                            <div class="day-date">Feb 3</div>
+                        </div>
+                        <div class="completion-rate">70%</div>
+                    </div>
+                    <div class="today-focus">Prepare for conference call</div>
+                    
+                    <div class="tasks-section">
+                        <h4><i class="fas fa-tasks"></i> Tasks</h4>
+                        <ul class="task-list">
+                            <li class="task-item">
+                                <div class="task-priority priority-high"></div>
+                                <span>Conference call at 10 AM</span>
+                                <div class="task-actions">
+                                    <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-priority priority-medium"></div>
+                                <span>Review quarterly reports</span>
+                                <div class="task-actions">
+                                    <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-priority priority-low"></div>
+                                <span>Update calendar</span>
+                                <div class="task-actions">
+                                    <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="events-section">
+                        <h4><i class="fas fa-calendar"></i> Events</h4>
+                        <ul class="event-list">
+                            <li class="event-item">
+                                <div class="event-type event-work"></div>
+                                <span>Team Sync - 11:00 AM</span>
+                            </li>
+                            <li class="event-item">
+                                <div class="event-type event-personal"></div>
+                                <span>Dentist Appointment - 4:00 PM</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="notes-section">
+                        <textarea placeholder="Add notes for Tuesday...">Remember to call dentist to confirm appointment</textarea>
+                    </div>
+                    
+                    <div class="add-task-section">
+                        <div class="add-task-input">
+                            <input type="text" placeholder="Add new task...">
+                            <button class="add-task-btn">+</button>
+                        </div>
+                        <div class="priority-selector">
+                            <div class="priority-option selected">Low</div>
+                            <div class="priority-option">Medium</div>
+                            <div class="priority-option">High</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Wednesday -->
+                <div class="day-card wednesday">
+                    <div class="day-header">
+                        <div>
+                            <div class="day-name">Wednesday</div>
+                            <div class="day-date">Feb 4</div>
+                        </div>
+                        <div class="completion-rate">90%</div>
+                    </div>
+                    <div class="today-focus">Submit project milestone</div>
+                    
+                    <div class="tasks-section">
+                        <h4><i class="fas fa-tasks"></i> Tasks</h4>
+                        <ul class="task-list">
+                            <li class="task-item">
+                                <div class="task-priority priority-high"></div>
+                                <span>Submit project milestone</span>
+                                <div class="task-actions">
+                                    <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-priority priority-medium"></div>
+                                <span>Lunch with team</span>
+                                <div class="task-actions">
+                                    <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-priority priority-low"></div>
+                                <span>Buy groceries</span>
+                                <div class="task-actions">
+                                    <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="events-section">
+                        <h4><i class="fas fa-calendar"></i> Events</h4>
+                        <ul class="event-list">
+                            <li class="event-item">
+                                <div class="event-type event-work"></div>
+                                <span>Milestone Review - 2:00 PM</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="notes-section">
+                        <textarea placeholder="Add notes for Wednesday...">Prepare presentation for milestone review</textarea>
+                    </div>
+                </div>
+                
+                <!-- Thursday -->
+                <div class="day-card thursday">
+                    <div class="day-header">
+                        <div>
+                            <div class="day-name">Thursday</div>
+                            <div class="day-date">Feb 5</div>
+                        </div>
+                        <div class="completion-rate">60%</div>
+                    </div>
+                    <div class="today-focus">Review feedback and iterate</div>
+                    
+                    <div class="tasks-section">
+                        <h4><i class="fas fa-tasks"></i> Tasks</h4>
+                        <ul class="task-list">
+                            <li class="task-item">
+                                <div class="task-priority priority-high"></div>
+                                <span>Review feedback from stakeholders</span>
+                                <div class="task-actions">
+                                    <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-priority priority-medium"></div>
+                                <span>Plan weekend activities</span>
+                                <div class="task-actions">
+                                    <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-priority priority-low"></div>
+                                <span>Call dentist</span>
+                                <div class="task-actions">
+                                    <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="events-section">
+                        <h4><i class="fas fa-calendar"></i> Events</h4>
+                        <ul class="event-list">
+                            <li class="event-item">
+                                <div class="event-type event-work"></div>
+                                <span>Feedback Session - 9:00 AM</span>
+                            </li>
+                            <li class="event-item">
+                                <div class="event-type event-other"></div>
+                                <span>Friend's Birthday - All Day</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="notes-section">
+                        <textarea placeholder="Add notes for Thursday...">Follow up on feedback received today</textarea>
+                    </div>
+                </div>
+                
+                <!-- Friday -->
+                <div class="day-card friday">
+                    <div class="day-header">
+                        <div>
+                            <div class="day-name">Friday</div>
+                            <div class="day-date">Feb 6</div>
+                        </div>
+                        <div class="completion-rate">75%</div>
+                    </div>
+                    <div class="today-focus">Wrap up week and plan next</div>
+                    
+                    <div class="tasks-section">
+                        <h4><i class="fas fa-tasks"></i> Tasks</h4>
+                        <ul class="task-list">
+                            <li class="task-item">
+                                <div class="task-priority priority-high"></div>
+                                <span>Weekly report submission</span>
+                                <div class="task-actions">
+                                    <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-priority priority-medium"></div>
+                                <span>Team retrospective</span>
+                                <div class="task-actions">
+                                    <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-priority priority-low"></div>
+                                <span>Update personal goals</span>
+                                <div class="task-actions">
+                                    <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="events-section">
+                        <h4><i class="fas fa-calendar"></i> Events</h4>
+                        <ul class="event-list">
+                            <li class="event-item">
+                                <div class="event-type event-work"></div>
+                                <span>Retrospective - 3:00 PM</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="notes-section">
+                        <textarea placeholder="Add notes for Friday...">Prepare for next week's priorities</textarea>
+                    </div>
+                </div>
+                
+                <!-- Saturday -->
+                <div class="day-card saturday">
+                    <div class="day-header">
+                        <div>
+                            <div class="day-name">Saturday</div>
+                            <div class="day-date">Feb 7</div>
+                        </div>
+                        <div class="completion-rate">45%</div>
+                    </div>
+                    <div class="today-focus">Relax and recharge</div>
+                    
+                    <div class="tasks-section">
+                        <h4><i class="fas fa-tasks"></i> Tasks</h4>
+                        <ul class="task-list">
+                            <li class="task-item">
+                                <div class="task-priority priority-low"></div>
+                                <span>Grocery shopping</span>
+                                <div class="task-actions">
+                                    <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-priority priority-low"></div>
+                                <span>Movie night</span>
+                                <div class="task-actions">
+                                    <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-priority priority-low"></div>
+                                <span>House cleaning</span>
+                                <div class="task-actions">
+                                    <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="events-section">
+                        <h4><i class="fas fa-calendar"></i> Events</h4>
+                        <ul class="event-list">
+                            <li class="event-item">
+                                <div class="event-type event-personal"></div>
+                                <span>Family Dinner - 7:00 PM</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="notes-section">
+                        <textarea placeholder="Add notes for Saturday...">Relax and enjoy the weekend</textarea>
+                    </div>
+                </div>
+                
+                <!-- Sunday -->
+                <div class="day-card sunday">
+                    <div class="day-header">
+                        <div>
+                            <div class="day-name">Sunday</div>
+                            <div class="day-date">Feb 8</div>
+                        </div>
+                        <div class="completion-rate">30%</div>
+                    </div>
+                    <div class="today-focus">Prepare for upcoming week</div>
+                    
+                    <div class="tasks-section">
+                        <h4><i class="fas fa-tasks"></i> Tasks</h4>
+                        <ul class="task-list">
+                            <li class="task-item">
+                                <div class="task-priority priority-medium"></div>
+                                <span>Meal prep for week</span>
+                                <div class="task-actions">
+                                    <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-priority priority-low"></div>
+                                <span>Read new book</span>
+                                <div class="task-actions">
+                                    <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-priority priority-low"></div>
+                                <span>Plan week ahead</span>
+                                <div class="task-actions">
+                                    <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="events-section">
+                        <h4><i class="fas fa-calendar"></i> Events</h4>
+                        <ul class="event-list">
+                            <li class="event-item">
+                                <div class="event-type event-personal"></div>
+                                <span>Self-care Day - All Day</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="notes-section">
+                        <textarea placeholder="Add notes for Sunday...">Prepare mentally for the new week ahead</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Super Calendar v2.0 • Enhanced Productivity System • Made with ❤️</p>
+        </div>
+    </div>
+    
+    <script>
+        // Enhanced interactivity for the Super Calendar
+        document.addEventListener('DOMContentLoaded', function() {
+            // Habit tracking functionality
+            const habitCheckboxes = document.querySelectorAll('.habit-checkbox');
+            habitCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('click', function() {
+                    this.classList.toggle('checked');
+                });
+            });
+            
+            // Task completion functionality
+            const taskCheckButtons = document.querySelectorAll('.task-action-btn');
+            taskCheckButtons.forEach(button => {
+                if (button.innerHTML.includes('fa-check')) {
+                    button.addEventListener('click', function() {
+                        const taskItem = this.closest('.task-item');
+                        taskItem.style.opacity = '0.6';
+                        taskItem.style.textDecoration = 'line-through';
+                    });
+                }
+            });
+            
+            // Priority selection
+            const priorityOptions = document.querySelectorAll('.priority-option');
+            priorityOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    priorityOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+            
+            // Month navigation
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const monthDisplay = document.querySelector('.current-month');
+                    const currentMonth = monthDisplay.textContent.trim().split(' ')[0];
+                    const currentYear = monthDisplay.textContent.trim().split(' ')[1];
+                    
+                    // This would normally cycle through months
+                    alert(`Navigating to ${currentMonth} ${currentYear}`);
+                });
+            });
+            
+            // Today button
+            const todayBtn = document.querySelector('.control-btn:nth-child(2)');
+            todayBtn.addEventListener('click', function() {
+                alert('Returning to today!');
+                // In a real app, this would navigate to current date
+            });
+            
+            // Add task functionality
+            const addTaskInputs = document.querySelectorAll('.add-task-input input');
+            addTaskInputs.forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        const taskList = this.closest('.add-task-section').previousElementSibling.querySelector('.task-list');
+                        const priority = this.closest('.add-task-section').querySelector('.priority-option.selected').textContent.trim();
+                        
+                        const newTask = document.createElement('li');
+                        newTask.className = 'task-item';
+                        newTask.innerHTML = `
+                            <div class="task-priority priority-${priority.toLowerCase()}"></div>
+                            <span>${this.value}</span>
+                            <div class="task-actions">
+                                <button class="task-action-btn"><i class="fas fa-check"></i></button>
+                                <button class="task-action-btn"><i class="fas fa-edit"></i></button>
+                            </div>
+                        `;
+                        
+                        taskList.appendChild(newTask);
+                        this.value = '';
+                        
+                        // Add event listener to the new task's check button
+                        const newCheckBtn = newTask.querySelector('.task-action-btn');
+                        newCheckBtn.addEventListener('click', function() {
+                            newTask.style.opacity = '0.6';
+                            newTask.style.textDecoration = 'line-through';
+                        });
+                    }
+                });
+            });
+            
+            // Simulate loading animations
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

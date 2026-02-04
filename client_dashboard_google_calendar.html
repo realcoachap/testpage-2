@@ -455,12 +455,6 @@
             margin-bottom: 1rem;
         }
         
-        .calendar-controls {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        
         .calendar-nav {
             display: flex;
             gap: 10px;
@@ -473,12 +467,6 @@
             padding: 5px 10px;
             border-radius: 3px;
             cursor: pointer;
-        }
-        
-        .theme-selector {
-            padding: 5px 10px;
-            border-radius: 3px;
-            border: 1px solid #ddd;
         }
         
         .calendar-grid {
@@ -503,14 +491,10 @@
             padding: 5px;
             cursor: pointer;
             border: 1px solid #eee;
-            position: relative;
-            transition: all 0.3s ease;
         }
         
         .calendar-day:hover {
             background: #f0f8ff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
         .calendar-day-number {
@@ -528,127 +512,6 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-        }
-        
-        /* Availability Status */
-        .availability-status {
-            position: absolute;
-            bottom: 5px;
-            left: 5px;
-            right: 5px;
-            text-align: center;
-            font-size: 0.7rem;
-            padding: 2px;
-            border-radius: 3px;
-        }
-        
-        .available {
-            background: var(--success-color);
-            color: white;
-        }
-        
-        .busy {
-            background: var(--danger-color);
-            color: white;
-        }
-        
-        .limited {
-            background: var(--warning-color);
-            color: white;
-        }
-        
-        /* Theme Classes */
-        .theme-professional {
-            --primary-color: #2c3e50;
-            --secondary-color: #34495e;
-            --accent-color: #3498db;
-        }
-        
-        .theme-fun {
-            --primary-color: #e74c3c;
-            --secondary-color: #f39c12;
-            --accent-color: #9b59b6;
-        }
-        
-        .theme-elegant {
-            --primary-color: #8e44ad;
-            --secondary-color: #16a085;
-            --accent-color: #f1c40f;
-        }
-        
-        .theme-sporty {
-            --primary-color: #27ae60;
-            --secondary-color: #e67e22;
-            --accent-color: #e74c3c;
-        }
-        
-        /* Time Slot Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-        
-        .modal-content {
-            background-color: white;
-            margin: 15% auto;
-            padding: 20px;
-            border-radius: 8px;
-            width: 80%;
-            max-width: 500px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-        
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
-        .close:hover {
-            color: black;
-        }
-        
-        .time-slots {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 10px;
-            margin: 15px 0;
-        }
-        
-        .time-slot {
-            padding: 10px;
-            text-align: center;
-            background: #f0f0f0;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        
-        .time-slot:hover {
-            background: #e0e0e0;
-        }
-        
-        .time-slot.available {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .time-slot.busy {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        
-        .time-slot.limited {
-            background: #fff3cd;
-            color: #856404;
         }
         
         /* Google Calendar Section */
@@ -694,73 +557,6 @@
             border: 1px solid #ffeaa7;
             border-radius: 5px;
             color: #856404;
-        }
-        
-        /* WhatsApp Calendar Section */
-        .whatsapp-calendar-section {
-            display: none;
-            margin-top: 2rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .whatsapp-calendar-section.visible {
-            display: block !important;
-            opacity: 1;
-        }
-        
-        .whatsapp-calendar-container {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-            min-height: 600px;
-            position: relative;
-        }
-        
-        .whatsapp-calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        
-        .whatsapp-calendar-info {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            border-radius: 5px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .whatsapp-calendar-features {
-            margin: 1rem 0;
-        }
-        
-        .whatsapp-calendar-features ul {
-            padding-left: 1.5rem;
-        }
-        
-        .whatsapp-calendar-features li {
-            margin-bottom: 0.5rem;
-        }
-        
-        .whatsapp-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #25D366;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            text-decoration: none;
-        }
-        
-        .whatsapp-button:hover {
-            background: #1da851;
         }
         
         /* Messages Section (Initially Hidden) */
@@ -883,7 +679,7 @@
     <!-- Header -->
     <header>
         <div class="container header-container">
-            <a href="index.html" class="logo">Ascended <span>Fitness</span> by Coach AP</a>
+            <a href="index.html" class="logo">Elite<span>Fit</span> Portal</a>
             <div class="user-info">
                 <span class="user-greeting">Welcome, John!</span>
                 <button class="logout-btn" onclick="logout()">Logout</button>
@@ -906,7 +702,6 @@
                 <li><a href="#" onclick="showSection('messages', event)"><i class="fas fa-comments"></i> <span>Messages</span></a></li>
                 <li><a href="#" onclick="showSection('schedule', event)"><i class="fas fa-calendar-alt"></i> <span>Schedule</span></a></li>
                 <li><a href="#" onclick="showSection('google-calendar', event)"><i class="fas fa-google"></i> <span>Google Calendar</span></a></li>
-                <li><a href="#" onclick="showSection('whatsapp-calendar', event)"><i class="fab fa-whatsapp"></i> <span>WhatsApp Calendar</span></a></li>
                 <li><a href="#" onclick="showSection('calculator', event)"><i class="fas fa-calculator"></i> <span>Calorie Calculator</span></a></li>
                 <li><a href="#" onclick="showSection('resources', event)"><i class="fas fa-book"></i> <span>Resources</span></a></li>
                 <li><a href="#" onclick="showSection('settings', event)"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
@@ -1104,43 +899,19 @@
                 </div>
             </div>
 
-            <!-- Calendar Section -->
+            <!-- Traditional Calendar Section -->
             <div id="scheduleSection" class="calendar-section">
                 <div class="calendar-container">
                     <div class="calendar-header">
-                        <h3>Super Calendar - Your Ultimate Scheduling Solution</h3>
-                        <div class="calendar-controls">
-                            <select id="themeSelector" class="theme-selector" onchange="changeTheme(this.value)">
-                                <option value="default">Default Theme</option>
-                                <option value="professional">Professional</option>
-                                <option value="fun">Fun & Playful</option>
-                                <option value="elegant">Elegant</option>
-                                <option value="sporty">Sporty</option>
-                            </select>
-                            <div class="calendar-nav">
-                                <button onclick="prevMonth()"><i class="fas fa-chevron-left"></i></button>
-                                <button onclick="today()">Today</button>
-                                <button onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
-                            </div>
+                        <h3>Interactive Calendar</h3>
+                        <div class="calendar-nav">
+                            <button onclick="prevMonth()"><i class="fas fa-chevron-left"></i></button>
+                            <button onclick="today()">Today</button>
+                            <button onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
                         </div>
                     </div>
                     <div id="calendarGrid" class="calendar-grid">
                         <!-- Calendar will be generated by JavaScript -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Time Slot Modal -->
-            <div id="timeSlotModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeModal()">&times;</span>
-                    <h3 id="selectedDateTitle">Available Times</h3>
-                    <p>Select a time slot for your appointment:</p>
-                    <div id="timeSlotsContainer" class="time-slots">
-                        <!-- Time slots will be populated here -->
-                    </div>
-                    <div style="margin-top: 15px; text-align: center;">
-                        <button class="btn btn-primary" onclick="bookTimeSlot()">Book Selected Time</button>
                     </div>
                 </div>
             </div>
@@ -1166,62 +937,6 @@
                     <button class="btn btn-primary" onclick="embedGoogleCalendar()">Embed Calendar</button>
                     <div id="googleCalendarIframeContainer">
                         <!-- Google Calendar iframe will be inserted here -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- WhatsApp Calendar Section -->
-            <div id="whatsappCalendarSection" class="whatsapp-calendar-section">
-                <div class="whatsapp-calendar-container">
-                    <div class="whatsapp-calendar-header">
-                        <h3>WhatsApp Calendar Integration</h3>
-                    </div>
-                    <div class="whatsapp-calendar-info">
-                        <p><strong>Integrated Scheduling via WhatsApp</strong></p>
-                        <p>Connect your calendar with WhatsApp to receive automatic appointment confirmations, reminders, and scheduling updates.</p>
-                    </div>
-                    
-                    <div class="whatsapp-calendar-features">
-                        <h4>Features:</h4>
-                        <ul>
-                            <li>Automatic appointment confirmations via WhatsApp</li>
-                            <li>Smart reminder notifications before appointments</li>
-                            <li>Easy rescheduling through WhatsApp messages</li>
-                            <li>Availability updates in real-time</li>
-                            <li>Integration with your Google Calendar</li>
-                        </ul>
-                    </div>
-                    
-                    <div style="margin: 1.5rem 0;">
-                        <h4>Schedule Appointment via WhatsApp:</h4>
-                        <p>Click the button below to contact your trainer directly through WhatsApp to schedule an appointment:</p>
-                        <a href="https://wa.me/13057840724" target="_blank" class="whatsapp-button">
-                            <i class="fab fa-whatsapp"></i> Message Your Trainer
-                        </a>
-                    </div>
-                    
-                    <div style="margin: 1.5rem 0;">
-                        <h4>Book Appointment:</h4>
-                        <p>Alternatively, you can request a booking by filling out this form:</p>
-                        <form id="bookingForm" style="margin-top: 1rem;">
-                            <div class="form-group">
-                                <label for="appointmentDate">Preferred Date</label>
-                                <input type="date" id="appointmentDate" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="appointmentTime">Preferred Time</label>
-                                <input type="time" id="appointmentTime" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="appointmentType">Appointment Type</label>
-                                <input type="hidden" id="appointmentType" value="personal-training">
-                            </div>
-                            <div class="form-group">
-                                <label for="appointmentNotes">Notes</label>
-                                <textarea id="appointmentNotes" class="form-control" rows="3" placeholder="Any special requests or notes..."></textarea>
-                            </div>
-                            <button type="button" class="btn btn-primary" onclick="sendBookingRequest()">Send Booking Request</button>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -1294,88 +1009,6 @@
         let currentDate = new Date();
         let currentMonth = currentDate.getMonth();
         let currentYear = currentDate.getFullYear();
-        let selectedDate = null;
-        let currentTheme = 'default';
-
-        // Availability data structure - in a real app this would come from a backend
-        let availabilityData = {};
-
-        // Initialize availability data with some sample data
-        initializeSampleAvailability();
-
-        function initializeSampleAvailability() {
-            // Add some sample availability for the next few days
-            const today = new Date();
-            for (let i = 0; i < 30; i++) {
-                const date = new Date();
-                date.setDate(today.getDate() + i);
-                
-                const dateStr = formatDate(date);
-                availabilityData[dateStr] = {
-                    status: Math.random() > 0.3 ? 'available' : 'busy', // Random availability
-                    timeSlots: generateTimeSlots(date)
-                };
-            }
-        }
-
-        function generateTimeSlots(date) {
-            // Generate time slots for a given date
-            // This is a simplified version - in reality, this would depend on day of week, etc.
-            const slots = [];
-            const dayOfWeek = date.getDay();
-            
-            // Define different schedules based on day of week
-            if (dayOfWeek === 0 || dayOfWeek === 6) { // Weekend
-                // Limited weekend hours
-                for (let hour = 9; hour <= 12; hour++) {
-                    slots.push({
-                        time: `${hour}:00`,
-                        available: Math.random() > 0.4
-                    });
-                }
-            } else { // Weekday
-                // More options during weekdays
-                for (let hour = 8; hour <= 18; hour++) {
-                    // Skip lunch hour
-                    if (hour !== 12) {
-                        slots.push({
-                            time: `${hour}:00`,
-                            available: Math.random() > 0.3
-                        });
-                    }
-                }
-            }
-            
-            return slots;
-        }
-
-        function formatDate(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-
-        // Theme changing functionality
-        function changeTheme(theme) {
-            const body = document.body;
-            
-            // Remove all theme classes
-            body.classList.remove('theme-professional', 'theme-fun', 'theme-elegant', 'theme-sporty');
-            
-            // Apply new theme if not default
-            if (theme !== 'default') {
-                body.classList.add(`theme-${theme}`);
-            }
-            
-            // Store selected theme
-            currentTheme = theme;
-            
-            // Regenerate calendar to apply theme changes to the calendar grid
-            if (document.getElementById('scheduleSection').style.display !== 'none') {
-                generateCalendar(currentMonth, currentYear);
-            }
-        }
 
         // Logout function
         function logout() {
@@ -1396,7 +1029,7 @@
             }
             
             // Hide all sections first
-            const allSections = document.querySelectorAll('.calendar-section, .google-calendar-section, .whatsapp-calendar-section, .messages-section, .calculator-section, .dashboard-grid');
+            const allSections = document.querySelectorAll('.calendar-section, .google-calendar-section, .messages-section, .calculator-section, .dashboard-grid');
             allSections.forEach(sec => {
                 if (sec) {
                     sec.style.display = 'none';
@@ -1452,14 +1085,14 @@
                                 inline: 'nearest'
                             });
                             
-                            // Additional forced visibility for calendar section
-                            scheduleSection.style.visibility = 'visible';
-                            scheduleSection.style.opacity = '1';
-                            
                             // Generate calendar after ensuring visibility
                             setTimeout(() => {
                                 generateCalendar(currentMonth, currentYear);
                                 console.log("Calendar generated");
+                                
+                                // Additional forced visibility for calendar section
+                                scheduleSection.style.visibility = 'visible';
+                                scheduleSection.style.opacity = '1';
                             }, 100);
                         }
                         break;
@@ -1488,33 +1121,6 @@
                             // Additional forced visibility for Google calendar section
                             googleCalendarSection.style.visibility = 'visible';
                             googleCalendarSection.style.opacity = '1';
-                        }
-                        break;
-                        
-                    case 'whatsapp-calendar':
-                        console.log("Showing WhatsApp Calendar section");
-                        document.querySelectorAll('.dashboard-grid').forEach(grid => {
-                            grid.style.display = 'none';
-                        });
-                        
-                        const whatsappCalendarSection = document.getElementById('whatsappCalendarSection');
-                        if (whatsappCalendarSection) {
-                            whatsappCalendarSection.style.display = 'block';
-                            whatsappCalendarSection.classList.add('visible');
-                            
-                            // Force layout recalculation
-                            whatsappCalendarSection.offsetHeight;
-                            
-                            // Smooth scroll to section
-                            whatsappCalendarSection.scrollIntoView({ 
-                                behavior: 'smooth', 
-                                block: 'start',
-                                inline: 'nearest'
-                            });
-                            
-                            // Additional forced visibility for WhatsApp calendar section
-                            whatsappCalendarSection.style.visibility = 'visible';
-                            whatsappCalendarSection.style.opacity = '1';
                         }
                         break;
                         
@@ -1550,7 +1156,7 @@
             }, 50); // Small delay to ensure proper rendering
         }
 
-        // Enhanced calendar functions with availability status
+        // Enhanced calendar functions
         function generateCalendar(month, year) {
             const calendarGrid = document.getElementById('calendarGrid');
             if (!calendarGrid) {
@@ -1592,26 +1198,15 @@
                     dayCell.style.border = '2px solid #2196f3';
                 }
                 
-                // Set up click handler to show availability
-                const date = new Date(year, month, day);
-                const dateStr = formatDate(date);
-                
+                // Fixed the event handler to pass correct parameters
                 dayCell.onclick = function() {
-                    selectDay(day, month, year, dateStr);
+                    selectDay(day, month, year);
                 };
                 
                 const dayNumber = document.createElement('div');
                 dayNumber.className = 'calendar-day-number';
                 dayNumber.textContent = day;
                 dayCell.appendChild(dayNumber);
-
-                // Add availability status indicator
-                if (availabilityData[dateStr]) {
-                    const statusDiv = document.createElement('div');
-                    statusDiv.className = `availability-status ${availabilityData[dateStr].status}`;
-                    statusDiv.textContent = availabilityData[dateStr].status.charAt(0).toUpperCase() + availabilityData[dateStr].status.slice(1);
-                    dayCell.appendChild(statusDiv);
-                }
 
                 // Add sample events for demonstration
                 if (day % 7 === 0) {
@@ -1635,90 +1230,9 @@
             }
         }
 
-        function selectDay(day, month, year, dateStr) {
-            // Store selected date
-            selectedDate = new Date(year, month, day);
-            
-            // Update modal title
-            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const formattedDate = selectedDate.toLocaleDateString('en-US', dateOptions);
-            document.getElementById('selectedDateTitle').textContent = `Available Times for ${formattedDate}`;
-            
-            // Populate time slots
-            populateTimeSlots(dateStr);
-            
-            // Show modal
-            document.getElementById('timeSlotModal').style.display = 'block';
+        function selectDay(day, month, year) {
+            alert(`Selected date: ${month + 1}/${day}/${year}\nYou can add events like workout of the day, body stats, meals, etc.`);
         }
-
-        function populateTimeSlots(dateStr) {
-            const container = document.getElementById('timeSlotsContainer');
-            container.innerHTML = ''; // Clear existing slots
-            
-            if (!availabilityData[dateStr]) {
-                // If no data for this date, generate some
-                availabilityData[dateStr] = {
-                    status: 'available',
-                    timeSlots: generateTimeSlots(new Date(dateStr))
-                };
-            }
-            
-            const timeSlots = availabilityData[dateStr].timeSlots;
-            
-            timeSlots.forEach(slot => {
-                const slotElement = document.createElement('div');
-                slotElement.className = `time-slot ${slot.available ? 'available' : 'busy'}`;
-                slotElement.textContent = slot.time;
-                
-                if (slot.available) {
-                    slotElement.onclick = function() {
-                        // Select this time slot
-                        document.querySelectorAll('.time-slot').forEach(el => {
-                            el.style.border = 'none';
-                            el.style.boxShadow = 'none';
-                        });
-                        this.style.border = '2px solid var(--primary-color)';
-                        this.style.boxShadow = '0 0 5px rgba(0,0,0,0.3)';
-                        
-                        // Store selected time
-                        selectedTime = slot.time;
-                    };
-                } else {
-                    slotElement.style.cursor = 'not-allowed';
-                }
-                
-                container.appendChild(slotElement);
-            });
-        }
-
-        function closeModal() {
-            document.getElementById('timeSlotModal').style.display = 'none';
-        }
-
-        function bookTimeSlot() {
-            if (!selectedDate || !selectedTime) {
-                alert('Please select a date and time first.');
-                return;
-            }
-            
-            // In a real application, this would make an API call to book the slot
-            // For now, we'll simulate the booking
-            
-            const dateStr = formatDate(selectedDate);
-            const timeStr = selectedTime;
-            
-            alert(`Booking confirmed for ${dateStr} at ${timeStr}!\n\nA confirmation will be sent to your email and WhatsApp.`);
-            
-            // Close modal and reset selections
-            closeModal();
-            selectedDate = null;
-            selectedTime = null;
-            
-            // Refresh calendar to show updated availability
-            generateCalendar(currentMonth, currentYear);
-        }
-
-        let selectedTime = null;
 
         function prevMonth() {
             currentMonth--;
@@ -1795,39 +1309,6 @@
             `;
         }
 
-        // WhatsApp booking request function
-        function sendBookingRequest() {
-            const date = document.getElementById('appointmentDate').value;
-            const time = document.getElementById('appointmentTime').value;
-            const notes = document.getElementById('appointmentNotes').value;
-            
-            if (!date || !time) {
-                alert('Please select both date and time for your appointment.');
-                return;
-            }
-            
-            // Format the appointment details into a message
-            const appointmentDetails = {
-                date: new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
-                time: time,
-                type: 'Personal Training Session',
-                notes: notes || 'No additional notes'
-            };
-            
-            // Create a WhatsApp message with the appointment details
-            const whatsappMessage = encodeURIComponent(
-                `Hello! I'd like to book an appointment:\n\n` +
-                `Date: ${appointmentDetails.date}\n` +
-                `Time: ${appointmentDetails.time}\n` +
-                `Type: ${appointmentDetails.type}\n` +
-                `Notes: ${appointmentDetails.notes}\n\n` +
-                `Please confirm my booking. Thanks!`
-            );
-            
-            // Open WhatsApp with the pre-filled message
-            window.open(`https://wa.me/13057840724?text=${whatsappMessage}`, '_blank');
-        }
-
         // Calorie calculator
         function calculateCalories() {
             const gender = document.getElementById('gender').value;
@@ -1865,14 +1346,6 @@
             `;
         }
 
-        // Close modal when clicking outside of it
-        window.onclick = function(event) {
-            const modal = document.getElementById('timeSlotModal');
-            if (event.target === modal) {
-                closeModal();
-            }
-        }
-
         // Initialize calendar on page load
         document.addEventListener('DOMContentLoaded', function() {
             console.log("DOM loaded, initializing calendar");
@@ -1882,13 +1355,6 @@
         // Additional initialization to ensure functionality
         window.onload = function() {
             console.log("Window loaded");
-            
-            // Set min date for appointment booking to today
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('appointmentDate').min = today;
-            
-            // Set default theme
-            document.getElementById('themeSelector').value = currentTheme;
         };
     </script>
 </body>
